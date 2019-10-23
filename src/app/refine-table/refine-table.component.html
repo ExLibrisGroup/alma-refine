@@ -4,15 +4,17 @@
 
 <div class="mat-elevation-z8 refine-table-container">
   <div class="loading-shade"
-        *ngIf="isLoadingResults || isLoadingError">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-    <div class="loading-error" *ngIf="isLoadingError">
+        *ngIf="dataSource.isLoading | async">
+    <mat-spinner *ngIf="dataSource.isLoading | async"></mat-spinner>
+    <!--
+      <div class="loading-error" *ngIf="isLoadingError">
       There's been an error retrieving the content.
     </div>
+    -->
   </div> 
 
   <div>
-    <table mat-table [dataSource]="data" class="full-width-table">
+    <table mat-table [dataSource]="dataSource" class="full-width-table">
       <!-- Id Column -->
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>MMS ID</th>
@@ -30,7 +32,7 @@
     </table>
   </div>
   
-  <mat-paginator [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+  <mat-paginator [length]="dataSource.recordCount | async" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
 </div>
 
 

@@ -4,11 +4,12 @@ import { Bib } from '../models/bib';
 import { Set } from '../models/set';
 import { SetOfBibsService } from '../services/set-of-bibs.service';
 import { merge, of as observableOf, Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../models/refine-service';
 import { MatSelectChange } from '@angular/material';
 import { FormControl } from '@angular/forms';
+import { RefineTableDataSource } from './refine-table-datasource';
 
 @Component({
   selector: 'app-refine-table',
@@ -17,12 +18,8 @@ import { FormControl } from '@angular/forms';
 })
 export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title'];
-  data: Bib[] = [];
+  dataSource: RefineTableDataSource = new RefineTableDataSource(this.setOfBibsService);
   refineServices: Observable<RefineService[]>;
-
-  resultsLength = 0;
-  isLoadingResults = false;
-  isLoadingError = false;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
@@ -38,6 +35,14 @@ export class RefineTableComponent implements OnInit {
 
   ngAfterViewInit() {
     this.setInitialRefineService();
+    this.paginator.page
+      .pipe(
+        tap(() => this.dataSource.loadBibs(
+          { pageIndex: this.paginator.pageIndex, 
+            pageSize: this.paginator.pageSize
+          })
+        )
+      ).subscribe();
   }
 
   setInitialRefineService() {
@@ -57,31 +62,7 @@ export class RefineTableComponent implements OnInit {
   }
 
   setSelected(set: Set) {
-    this.populateTable(set.id);
-  }
-
-  populateTable(setId: string) {
-    merge(this.paginator.page)
-    .pipe(
-      startWith({}),
-      switchMap(() => {
-        this.isLoadingResults = true;
-        return this.setOfBibsService.getSetOfBibs(setId,
-          this.paginator.pageIndex, this.paginator.pageSize);
-      }),
-      map(data => {
-        // Flip flag to show that loading has finished.
-        this.isLoadingResults = false;
-        this.isLoadingError = false;
-        this.resultsLength = data.total_record_count;
-        return data.bibs;
-      }),
-      catchError(() => {
-        this.isLoadingResults = false;
-        this.isLoadingError = true;
-        return observableOf([]);
-      })
-    ).subscribe(data => this.data = data);   
+    this.dataSource.loadBibs({setId: set.id});
   }
 
   refine() {
