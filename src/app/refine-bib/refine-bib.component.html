@@ -1,0 +1,17 @@
+<div class="refine-bib">
+  <mat-list>
+    <mat-list-item *ngFor="let field of refinements ; last as isLast" class="refine-list-item">
+      <p mat-line class="refine-bib-field">{{field.tag}}${{field.subfield}}: {{field.value}}</p>
+      <mat-form-field class="refine-bib-options">
+          <mat-label>Select a refinement</mat-label>
+          <mat-select [(value)]="selected">
+            <mat-option>None</mat-option>
+            <mat-option value="option1">Option 1</mat-option>
+            <mat-option value="option2">Option 2</mat-option>
+            <mat-option value="option3">Option 3</mat-option>
+          </mat-select>
+        </mat-form-field>      
+      <mat-divider *ngIf="!isLast"></mat-divider>
+    </mat-list-item>
+  </mat-list>
+</div>

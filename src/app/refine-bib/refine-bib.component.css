@@ -1,0 +1,8 @@
+.mat-list .mat-list-item {
+  height: 50px!important; /* default is 72px */
+  font-size: small!important; 
+}
+
+.refine-bib-field {
+  padding-right: 10px!important
+}

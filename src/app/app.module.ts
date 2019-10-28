@@ -17,20 +17,23 @@ import {
    MatSelectModule,
    MatRadioModule,
    MatCardModule,
-   MatAutocompleteModule
+   MatAutocompleteModule,
+   MatListModule
  } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TopMenuComponent } from './top-menu/top-menu.component';
 import { RefineTableComponent } from './refine-table/refine-table.component';
 import { SelectSetComponent } from './select-set/select-set.component';
+import { RefineBibComponent } from './refine-bib/refine-bib.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       TopMenuComponent,
       RefineTableComponent,
-      SelectSetComponent
+      SelectSetComponent,
+      RefineBibComponent
    ],
    imports: [
       BrowserModule,
@@ -47,6 +50,7 @@ import { SelectSetComponent } from './select-set/select-set.component';
       MatSelectModule,
       MatRadioModule,
       MatCardModule,
+      MatListModule,
       MatAutocompleteModule,
       ReactiveFormsModule,
       FormsModule

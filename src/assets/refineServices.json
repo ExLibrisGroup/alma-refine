@@ -4,8 +4,8 @@
     "description": "",
     "url": "http://services.getty.edu/vocab/reconcile",
     "fields": [
-      "1xx",
-      "6xx",
+      "1xx$a",
+      "6xx$a",
       "7xx"
     ]
   },

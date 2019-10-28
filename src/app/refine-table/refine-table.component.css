@@ -32,3 +32,11 @@ td.mat-cell, th.mat-header-cell {
   max-width: 360px;
   text-align: center;
 }
+
+.refine-options app-select-set {
+  padding-right: 20px;
+}
+
+.align-top {
+  vertical-align: top;
+}

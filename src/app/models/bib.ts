@@ -1,13 +1,23 @@
 export interface Bib {
   link: string,
-  mmsId: string;
+  mms_id: string;
   title: string;
-  //dataFields: {[key: string]: string}[];
-  dataFields?: object
-  //dataFields: [string, string][];
+  anies: any;
+  refineFields?: {[key: string]: RefineField}[];
 }
 
 export interface Bibs {
-  bibs: Bib[];
+  bib: Bib[];
   total_record_count: number;
+}
+
+export interface RefineField {
+  tag: string;
+  subfield: string;
+  value: string;
+  refineOptions?: { value: string; uri: string }[]
+}
+
+export interface Refinements {
+  [key: string]: RefineField[]
 }

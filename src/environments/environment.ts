@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  proxyUrl: "https://alma-apprefine-proxy.herokuapp.com"
+  proxyUrl: "http://localhost:5050"
 };
 
 /*

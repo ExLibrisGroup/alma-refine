@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Bib } from '../models/bib';
 import { Set } from '../models/set';
-import { SetOfBibsService } from '../services/set-of-bibs.service';
-import { merge, of as observableOf, Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { BibsService } from '../services/bibs.service';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../models/refine-service';
 import { MatSelectChange } from '@angular/material';
@@ -17,15 +17,16 @@ import { RefineTableDataSource } from './refine-table-datasource';
   styleUrls: ['./refine-table.component.css']
 })
 export class RefineTableComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'title'];
-  dataSource: RefineTableDataSource = new RefineTableDataSource(this.setOfBibsService);
+  displayedColumns: string[] = ['id', 'title', 'refine'];
+  expandedBib: Bib | null;
+  dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService);
   refineServices: Observable<RefineService[]>;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
 
   constructor(
-    private setOfBibsService: SetOfBibsService,
+    private bibsService: BibsService,
     private configService: ConfigService
   ) { }
 
@@ -65,7 +66,15 @@ export class RefineTableComponent implements OnInit {
     this.dataSource.loadBibs({setId: set.id});
   }
 
-  refine() {
+  async refine() {
     console.log('in refine');
+    //console.log('currentlyDisplayedBibs', this.dataSource.currentlyDisplayedBibs);
+    //let bibs = await this.bibsService.getBibs(this.dataSource.currentlyDisplayedBibs.map(bib=>bib.mms_id));
+    //console.log('refine', bibs);
   }
+
+  compareBib(a: Bib, b: Bib): boolean {
+    return a && b ? a.mms_id === b.mms_id : a === b;
+  }
+
 }
