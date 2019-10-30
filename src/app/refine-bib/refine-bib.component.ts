@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
-import { Bib, Refinements, RefineField } from '../models/bib';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Bib, Refinements, RefineField, RefineOption } from '../models/bib';
+import { MatSelectChange } from '@angular/material';
 
 @Component({
   selector: 'app-refine-bib',
@@ -8,6 +9,10 @@ import { Bib, Refinements, RefineField } from '../models/bib';
 })
 export class RefineBibComponent  {
   @Input() refinements: RefineField[];
+  
   constructor() { }
 
+  compareRefineOptions(a: RefineOption, b: RefineOption): boolean {
+    return a && b ? a.uri === b.uri : a === b;
+  }  
 }

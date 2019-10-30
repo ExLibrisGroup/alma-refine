@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { Bib } from '../models/bib';
+import { Bib, RefineField } from '../models/bib';
 import { Set } from '../models/set';
 import { BibsService } from '../services/bibs.service';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
-import { RefineService } from '../models/refine-service';
-import { MatSelectChange } from '@angular/material';
+import { RefineServiceDef } from '../models/refine-service';
+import { MatSelectChange  } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { RefineTableDataSource } from './refine-table-datasource';
+import { RefineService } from '../services/refine.service';
 
 @Component({
   selector: 'app-refine-table',
@@ -18,17 +19,14 @@ import { RefineTableDataSource } from './refine-table-datasource';
 })
 export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'refine'];
-  expandedBib: Bib | null;
-  dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService);
-  refineServices: Observable<RefineService[]>;
+  dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
+  refineServices: Observable<RefineServiceDef[]>;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
 
-  constructor(
-    private bibsService: BibsService,
-    private configService: ConfigService
-  ) { }
+  constructor( private bibsService: BibsService, private configService: ConfigService,
+    private refineService: RefineService ) { }
 
   ngOnInit() {
     this.refineServices = this.configService.getRefineServices();
@@ -54,7 +52,7 @@ export class RefineTableComponent implements OnInit {
       })
   }
 
-  compareRefineServices(a: RefineService, b: RefineService): boolean {
+  compareRefineServices(a: RefineServiceDef, b: RefineServiceDef): boolean {
     return a.url === b.url;
   }
 
@@ -62,15 +60,12 @@ export class RefineTableComponent implements OnInit {
     this.configService.selectedRefineService = event.source.value;
   }
 
-  setSelected(set: Set) {
+  onSetSelected(set: Set) {
     this.dataSource.loadBibs({setId: set.id});
   }
 
-  async refine() {
-    console.log('in refine');
-    //console.log('currentlyDisplayedBibs', this.dataSource.currentlyDisplayedBibs);
-    //let bibs = await this.bibsService.getBibs(this.dataSource.currentlyDisplayedBibs.map(bib=>bib.mms_id));
-    //console.log('refine', bibs);
+  async save() {
+    let data = this.dataSource.saveRefinements();
   }
 
   compareBib(a: Bib, b: Bib): boolean {

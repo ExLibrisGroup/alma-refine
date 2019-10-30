@@ -4,7 +4,7 @@
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" panelWidth="500px">
     <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
     <ng-container *ngIf="!isLoading">
-      <mat-option *ngFor="let option of filteredOptions.set" [value]="option" (onSelectionChange)="setSelected.emit($event.source.value);">
+      <mat-option *ngFor="let option of filteredOptions.set" [value]="option" (onSelectionChange)="setSelected.emit($event.source.value)">
         {{option.name}}
       </mat-option>      
     </ng-container>

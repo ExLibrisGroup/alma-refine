@@ -3,13 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Sets } from '../models/set';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { RefineService } from '../models/refine-service';
+import { RefineServiceDef } from '../models/refine-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-  selectedRefineService: RefineService;
+  private _selectedRefineService: RefineServiceDef;
 
   constructor(
     private httpClient: HttpClient
@@ -23,8 +23,23 @@ export class ConfigService {
     );
   }
 
-  getRefineServices(): Observable<RefineService[]> {
-    return this.httpClient.get('/assets/refineServices.json') as Observable<RefineService[]>;
+  getRefineServices(): Observable<RefineServiceDef[]> {
+    return this.httpClient.get('/assets/refineServices.json') as Observable<RefineServiceDef[]>;
+  }
+
+  get selectedRefineService(): RefineServiceDef {
+    return this._selectedRefineService;
+  }
+
+  set selectedRefineService(value: RefineServiceDef) {
+    this._selectedRefineService = value;
+    this._selectedRefineService.serviceDetails = {};
+    try {
+      this.httpClient.get(this._selectedRefineService.url)
+        .subscribe(data=>this._selectedRefineService.serviceDetails=data);
+    } catch(e) {
+      
+    }
   }
 
   /*

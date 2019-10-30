@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { RefineServiceDef } from '../models/refine-service';
+import { Refinements } from '../models/bib';
+import { chunk, pick } from '../utilities';
 
 @Injectable({
   providedIn: 'root'
@@ -7,13 +10,29 @@ import { HttpClient } from '@angular/common/http';
 export class RefineService {
 
   constructor(
-    private http: HttpClient
+    private httpClient: HttpClient
   ) { }
 
-  async callRefineService() {
-    console.log('im here in the callRefind service');
-    var promise = this.http.get('http://services.getty.edu/vocab/reconcile/?queries={%22q1%22:{%22query%22:%22Laurent,%20Juan,%22,%22type%22:%22ulan%22}}').toPromise();
-    promise.then(data => window.alert(data));
+  private batchSize:number = 10;
+  private refineServiceDef: RefineServiceDef;
+
+  async callRefineService(refinements: Refinements, refineServiceDef: RefineServiceDef) {
+    let queries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => ({ ...a, [escape(c.value)]: {query: c.value, limit: 10}}), {});
+    let promises: Array<Promise<Refinements>> = chunk(Object.keys(queries), this.batchSize).map(keys=>{
+      let params = new HttpParams().set('queries', JSON.stringify(pick(keys)(queries)));
+      return this.httpClient.get(refineServiceDef.url, {params: params}).toPromise();
+    });
+    let results = await Promise.all(promises).then(data => Object.assign({},...data));
+    Object.entries(refinements).forEach(([key,value])=>{
+      value.forEach((o,i,a) => a[i].refineOptions=results[escape(o.value)].result.slice(0,10).map(e=>({value:e.name, uri: this.setUri(refineServiceDef, e.id)})));
+    });
+    return refinements;
   }
 
+  private setUri(refineServiceDef: RefineServiceDef, id: string): string {
+    return refineServiceDef.serviceDetails.view &&
+            refineServiceDef.serviceDetails.view.url ? 
+            refineServiceDef.serviceDetails.view.url.replace(/{{id}}/, id) : id;
+  }
 }
+

@@ -1,5 +1,3 @@
-//https://alma-apprefine-proxy.herokuapp.com/almaws/v1/conf/sets?content_type=BIB_MMS
-
 export interface SetMembers {
   member: SetMember[],
   total_record_count: number
