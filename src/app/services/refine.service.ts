@@ -24,15 +24,20 @@ export class RefineService {
     });
     let results = await Promise.all(promises).then(data => Object.assign({},...data));
     Object.entries(refinements).forEach(([key,value])=>{
-      value.forEach((o,i,a) => a[i].refineOptions=results[escape(o.value)].result.slice(0,10).map(e=>({value:e.name, uri: this.setUri(refineServiceDef, e.id)})));
+      value.forEach((o,i,a) => a[i].refineOptions=results[escape(o.value)].result.slice(0,10).map(e=>(Object.assign({value:e.name}, this.setUri(refineServiceDef, e.id)))));
     });
     return refinements;
   }
 
-  private setUri(refineServiceDef: RefineServiceDef, id: string): string {
-    return refineServiceDef.serviceDetails.view &&
+  private setUri(refineServiceDef: RefineServiceDef, id: string) {
+    let uri, previewUrl;
+    uri = refineServiceDef.serviceDetails.view &&
             refineServiceDef.serviceDetails.view.url ? 
             refineServiceDef.serviceDetails.view.url.replace(/{{id}}/, id) : id;
+    previewUrl = refineServiceDef.serviceDetails.preview &&
+      refineServiceDef.serviceDetails.preview.url ? 
+      refineServiceDef.serviceDetails.preview.url.replace(/http:\/\//, 'https://').replace(/{{id}}/, id) : "";
+    return {uri: uri, previewUrl: previewUrl};
   }
 }
 

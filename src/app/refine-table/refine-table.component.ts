@@ -21,6 +21,7 @@ export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'refine'];
   dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
   refineServices: Observable<RefineServiceDef[]>;
+  previewSize;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
@@ -60,12 +61,19 @@ export class RefineTableComponent implements OnInit {
     this.configService.selectedRefineService = event.source.value;
   }
 
+  setPreviewSize() {
+    this.previewSize = this.configService.selectedRefineService.serviceDetails &&
+      this.configService.selectedRefineService.serviceDetails.preview ? this.configService.selectedRefineService.serviceDetails.preview :
+      { height: 200, width: 350 };
+  }
+
   onSetSelected(set: Set) {
+    this.setPreviewSize();
     this.dataSource.loadBibs({setId: set.id});
   }
 
   async save() {
-    let data = this.dataSource.saveRefinements();
+    this.dataSource.saveRefinements();
   }
 
   compareBib(a: Bib, b: Bib): boolean {

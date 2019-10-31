@@ -18,7 +18,8 @@ import {
    MatRadioModule,
    MatCardModule,
    MatAutocompleteModule,
-   MatListModule
+   MatListModule,
+   MatIconModule
  } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -51,6 +52,7 @@ import { RefineBibComponent } from './refine-bib/refine-bib.component';
       MatRadioModule,
       MatCardModule,
       MatListModule,
+      MatIconModule,
       MatAutocompleteModule,
       ReactiveFormsModule,
       FormsModule

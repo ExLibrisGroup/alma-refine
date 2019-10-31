@@ -8,6 +8,9 @@
           <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" [compareWith]="compareRefineOptions">
             <mat-option *ngFor="let option of field.refineOptions" [value]="option">
               {{ option.value }}
+              <span *ngIf="option.previewUrl">
+                <mat-icon (mouseover)="showPreview($event,option.previewUrl)" (mouseout)="hidePreview()">info</mat-icon>
+              </span>
             </mat-option>
           </mat-select>          
         </mat-form-field>      

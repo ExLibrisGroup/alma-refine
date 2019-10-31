@@ -22,6 +22,7 @@ export interface RefineField {
 export interface RefineOption {
   value: string;
   uri: string;
+  previewUrl: string;
 }
 
 export interface Refinements {

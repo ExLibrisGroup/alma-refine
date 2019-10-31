@@ -18,3 +18,6 @@ export const asyncForEach = async (array, callback) => {
     await callback(array[index], index, array);
   }
 }
+
+/* Removes elements of a certain class */
+export const removeElements = (elms) => elms.forEach(el => el.remove());
