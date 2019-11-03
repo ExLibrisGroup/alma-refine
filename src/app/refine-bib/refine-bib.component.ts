@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { Bib, Refinements, RefineField, RefineOption } from '../models/bib';
-import { MatSelectChange } from '@angular/material';
-import { removeElements } from '../utilities';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { RefineField, RefineOption } from '../models/bib';
+import { Utils } from '../utilities';
 
 @Component({
   selector: 'app-refine-bib',
@@ -21,18 +20,23 @@ export class RefineBibComponent  {
 
   showPreview(event, url: string) { 
     setTimeout(()=>{ 
-      const elem = event.fromElement.closest(".mat-select-panel")
-      let iframe = document.createElement('iframe');
-      elem.parentNode.insertBefore(iframe, elem.nextSibling);
-      iframe.src = url;
-      iframe.className = 'refine-preview-pane';
-      iframe.frameBorder = '0';
-      iframe.height = this.previewSize.height || '200';
-      iframe.width = this.previewSize.width || '350';
+      const parent = event.fromElement.closest(".mat-select-panel");
+      let iframe = Utils.dom('iframe', {
+        parent: parent,
+        className: 'refine-preview-pane',
+        attributes: [
+          { att: 'src', val: url },
+          { att: 'frameBorder', val: '0' },
+          { att: 'height', val: this.previewSize.height || '200' },
+          { att: 'width', val: this.previewSize.width || '350', },
+          { att: 'scrolling', val: 'no'}
+        ]
+      });
+      if (parent) parent.parentNode.insertBefore(iframe, parent.nextSibling);
     }, 1000);
   }
   
   hidePreview() { 
-    removeElements( document.querySelectorAll(".refine-preview-pane") );
+    Utils.removeElements( document.querySelectorAll(".refine-preview-pane") );
   }  
 }

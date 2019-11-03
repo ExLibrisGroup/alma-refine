@@ -11,7 +11,7 @@ td.mat-cell, th.mat-header-cell {
 }
 
 .select-refine-service-field {
-  margin: 10px 20px 10px 0
+  margin: 00px 20px 10px 0
 }
 
 .loading-shade {
@@ -39,4 +39,17 @@ td.mat-cell, th.mat-header-cell {
 
 .align-top {
   vertical-align: top;
+}
+
+.refine-options button {
+  margin-right: 8px;
+  height: 45px;
+}
+
+div.refine-options {
+  display: flex;
+}
+
+div.refine-action-buttons {
+  margin-left: auto;
 }

@@ -6,6 +6,7 @@
       <mat-label *ngIf="field.refineOptions && field.refineOptions.length==0">No refinements found</mat-label>      
       <mat-form-field class="refine-bib-options" *ngIf="field.refineOptions && field.refineOptions.length>0">
           <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" [compareWith]="compareRefineOptions">
+            <mat-option (click)="field.selectedRefineOption=null">None</mat-option>
             <mat-option *ngFor="let option of field.refineOptions" [value]="option">
               {{ option.value }}
               <span *ngIf="option.previewUrl">

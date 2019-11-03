@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { switchMap, debounceTime, tap, finalize, startWith } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { Set, Sets } from '../models/set';
-import { MatOptionSelectionChange } from '@angular/material';
 
 @Component({
   selector: 'app-select-set',

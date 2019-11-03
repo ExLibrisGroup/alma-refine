@@ -5,7 +5,7 @@ import { BibsService } from '../services/bibs.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../services/refine.service';
-import { pick, select, chunk, asyncForEach } from '../utilities';
+import { Utils } from '../utilities';
 
 export class RefineTableDataSource implements DataSource<Bib> {
 
@@ -52,9 +52,9 @@ export class RefineTableDataSource implements DataSource<Bib> {
   }
 
   async loadRefinements( bibs: Bib[] ) {
-    // TODO: Don't override if already retrieved?
+    // TODO: Set selected field if $0 exists
     bibs.forEach(bib=>this.refinements[bib.mms_id]=this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
-    let refinements: Refinements = pick(bibs.map(b=>b.mms_id))(this.refinements);
+    let refinements: Refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
     // now retrieve options from refinement service
     this.refinementsSubject.next(refinements);
     refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
@@ -62,18 +62,19 @@ export class RefineTableDataSource implements DataSource<Bib> {
 
   async saveRefinements() {
     this.loadingSubject.next(true);
-    let updates = Object.assign({}, ...Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)})));
+    /* Filter refinements for those which have 1 or more refined fields */
+    let updates = Utils.filter(Object.assign({}, ...Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))), update => update.length > 0);
     let bibs: Bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
-    let applied: Bib[] = bibs.bib.filter(bib=>updates[bib.mms_id].length>0).map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
+    let applied: Bib[] = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
     /* Chunk into 10 updates at at time */
-    await asyncForEach(chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise())));
+    await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise())));
     this.loadingSubject.next(false);
   }
 
   private applyRefinements( bib: Bib, refinements: RefineField[]): Bib {
     const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
     refinements.forEach(field=>{
-      let datafields = select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`)
+      let datafields = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`)
       let datafield;
       if (datafield=datafields.iterateNext()) {
         if (field.selectedRefineOption) {
@@ -103,10 +104,10 @@ export class RefineTableDataSource implements DataSource<Bib> {
           xpath.push(`substring(@tag,1,1)="${tag.charAt(i)}"`);
         }
       }
-      let datafields = select(doc, `/record/datafield[${xpath.join(' or ')}]`);
+      let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' or ')}]`);
       let datafield, subfield: Node;
       while (datafield=datafields.iterateNext()) {
-        let subfields = select(doc, `subfield[@code="${subfieldCode}"]`, datafield);
+        let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, datafield);
         if(subfield=subfields.iterateNext()) {
           refineFields.push({
             tag: datafield.getAttribute('tag'),

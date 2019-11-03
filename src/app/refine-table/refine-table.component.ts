@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { Bib, RefineField } from '../models/bib';
+import { Bib } from '../models/bib';
 import { Set } from '../models/set';
 import { BibsService } from '../services/bibs.service';
 import { Observable } from 'rxjs';
@@ -11,6 +11,7 @@ import { MatSelectChange  } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { RefineTableDataSource } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
+import { Utils } from '../utilities';
 
 @Component({
   selector: 'app-refine-table',
@@ -21,7 +22,8 @@ export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'refine'];
   dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
   refineServices: Observable<RefineServiceDef[]>;
-  previewSize;
+  previewSize: { height: number, width: number} | {};
+  selectedSet: Set;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
@@ -31,7 +33,10 @@ export class RefineTableComponent implements OnInit {
 
   ngOnInit() {
     this.refineServices = this.configService.getRefineServices();
+    this.pingProxy();
   }
+
+  pingProxy() { this.configService.ping().then(() => setTimeout(() => this.pingProxy(), 240000))};
 
   ngAfterViewInit() {
     this.setInitialRefineService();
@@ -62,18 +67,27 @@ export class RefineTableComponent implements OnInit {
   }
 
   setPreviewSize() {
-    this.previewSize = this.configService.selectedRefineService.serviceDetails &&
-      this.configService.selectedRefineService.serviceDetails.preview ? this.configService.selectedRefineService.serviceDetails.preview :
-      { height: 200, width: 350 };
+    let serviceDetails = this.configService.selectedRefineService.serviceDetails;
+    this.previewSize = serviceDetails && serviceDetails.preview ? 
+      Utils.pick(['height', 'width'])(serviceDetails) : { height: 200, width: 350 };
   }
 
   onSetSelected(set: Set) {
+    this.selectedSet = set;
+  }
+
+  load() {
     this.setPreviewSize();
-    this.dataSource.loadBibs({setId: set.id});
+    this.dataSource.loadBibs({setId: this.selectedSet.id});
+  }
+
+  clear() {
+    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
   }
 
   async save() {
-    this.dataSource.saveRefinements();
+    await this.dataSource.saveRefinements();
+    this.clear();
   }
 
   compareBib(a: Bib, b: Bib): boolean {
