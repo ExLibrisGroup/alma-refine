@@ -55,7 +55,6 @@ export class RefineTableDataSource implements DataSource<Bib> {
     // TODO: Set selected field if $0 exists
     bibs.forEach(bib=>this.refinements[bib.mms_id]=this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
     let refinements: Refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
-    // now retrieve options from refinement service
     this.refinementsSubject.next(refinements);
     refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
   }

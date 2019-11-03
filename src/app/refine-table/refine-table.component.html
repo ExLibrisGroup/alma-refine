@@ -10,7 +10,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-stroked-button (click)="load()" color="primary">Begin Refining</button>
+  <button mat-stroked-button (click)="load()" [disabled]="(dataSource.recordCount | async) > 0" color="primary">Begin Refining</button>
   <div class="refine-action-buttons">
     <button mat-raised-button (click)="clear()" [disabled]="(dataSource.recordCount | async) == 0">Clear</button>
     <button mat-raised-button (click)="save()" color="primary" [disabled]="(dataSource.recordCount | async) == 0">Save Refinements</button>

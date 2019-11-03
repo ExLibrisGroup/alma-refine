@@ -16,3 +16,8 @@
   padding: 10px;
   box-shadow: 1px 0px 3px 1px #888;
 }
+
+.refine-options-message {
+  width: 250px;
+  text-align: center;
+}

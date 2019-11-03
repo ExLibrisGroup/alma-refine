@@ -28,7 +28,7 @@ export class ConfigService {
   }
 
   getRefineServices(): Observable<RefineServiceDef[]> {
-    return this.httpClient.get('/assets/refineServices.json') as Observable<RefineServiceDef[]>;
+    return this.httpClient.get('./assets/refineServices.json') as Observable<RefineServiceDef[]>;
   }
 
   get selectedRefineService(): RefineServiceDef {
