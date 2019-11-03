@@ -100,10 +100,10 @@ export class RefineTableDataSource implements DataSource<Bib> {
       let xpath = [];
       for (var i = 0; i < tag.length; i++) {
         if (tag.charAt(i)!='x') {
-          xpath.push(`substring(@tag,1,1)="${tag.charAt(i)}"`);
+          xpath.push(`substring(@tag,${i+1},1)="${tag.charAt(i)}"`);
         }
       }
-      let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' or ')}]`);
+      let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield, subfield: Node;
       while (datafield=datafields.iterateNext()) {
         let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, datafield);

@@ -10,9 +10,11 @@
     ]
   },
   {
-    "name": "Another service",
+    "name": "Wikidata",
     "description": "",
-    "url": "https://noservice.com",
-    "fields": []
+    "url": "https://tools.wmflabs.org/openrefine-wikidata/en/api",
+    "fields": [
+      "100$a"
+    ]
   }
 ]
