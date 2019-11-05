@@ -18,9 +18,9 @@ export class RefineBibComponent  {
     return a && b ? a.uri === b.uri : a === b;
   }  
 
-  showPreview(event, url: string) { 
+  showPreview(event: MouseEvent, url: string) { 
     setTimeout(()=>{ 
-      const parent = event.fromElement.closest(".mat-select-panel");
+      const parent = (<Element>event.target).closest(".mat-select-panel");
       let iframe = Utils.dom('iframe', {
         parent: parent,
         className: 'refine-preview-pane',

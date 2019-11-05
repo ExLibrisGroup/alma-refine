@@ -25,15 +25,12 @@ export class BibsService {
       .set('limit', pageSize.toString())
       .set('offset', (pageSize*pageNumber+1).toString())
     });
-    //.toPromise().then(data=>data.member.map(m=>m.id))
   }
 
   createBib( bib: Bib ) {
-    let o = this.httpClient.post<Bib>(environment.proxyUrl + '/almaws/v1/bibs',
+    return this.httpClient.post<Bib>(environment.proxyUrl + '/almaws/v1/bibs',
       `<bib>${bib.anies}</bib>`, 
       { headers: new HttpHeaders().set('Content-type', 'application/xml') } );
-    o.subscribe(data=>console.log('created', data.mms_id));
-    return o;
   }
   
   updateBib( bib: Bib ) {
@@ -41,6 +38,10 @@ export class BibsService {
       `<bib>${bib.anies}</bib>`, 
       { headers: new HttpHeaders().set('Content-type', 'application/xml') });
    }
+
+   getBib (mmsId: string) {
+    return this.httpClient.get<Bib>(environment.proxyUrl + `/almaws/v1/bibs/${mmsId}`)
+  }   
 
 }
 

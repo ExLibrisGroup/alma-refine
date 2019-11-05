@@ -11,9 +11,7 @@ import { RefineServiceDef } from '../models/refine-service';
 export class ConfigService {
   private _selectedRefineService: RefineServiceDef;
 
-  constructor(
-    private httpClient: HttpClient
-  ) {  }
+  constructor( private httpClient: HttpClient ) {  }
 
   searchSets(name: string = null, type: string = 'BIB_MMS'): Observable<Sets> {
     let params = new HttpParams().set('content_type', type);
@@ -41,8 +39,6 @@ export class ConfigService {
     try {
       this.httpClient.get(this._selectedRefineService.url)
         .subscribe(data=>this._selectedRefineService.serviceDetails=data);
-    } catch(e) {
-      
-    }
+    } catch(e) {  }
   }
 }

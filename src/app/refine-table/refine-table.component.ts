@@ -22,7 +22,7 @@ export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'refine'];
   dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
   refineServices: Observable<RefineServiceDef[]>;
-  previewSize: { height: number, width: number} | {};
+  previewSize: { height: number, width: number } | {};
   selectedSet: Set;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;

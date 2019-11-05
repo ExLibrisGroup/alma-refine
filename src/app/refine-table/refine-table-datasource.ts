@@ -62,11 +62,12 @@ export class RefineTableDataSource implements DataSource<Bib> {
   async saveRefinements() {
     this.loadingSubject.next(true);
     /* Filter refinements for those which have 1 or more refined fields */
-    let updates = Utils.filter(Object.assign({}, ...Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))), update => update.length > 0);
-    let bibs: Bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
-    let applied: Bib[] = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
+    let updates = Utils.filter(Object.assign({}, ...Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
+    let bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
+    let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
     /* Chunk into 10 updates at at time */
-    await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise())));
+    await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise()))
+      .then(data=>console.log('Created ' + data.map(b=>b.mms_id).join(', '))));
     this.loadingSubject.next(false);
   }
 
@@ -74,8 +75,8 @@ export class RefineTableDataSource implements DataSource<Bib> {
     const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
     refinements.forEach(field=>{
       let datafields = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`)
-      let datafield;
-      if (datafield=datafields.iterateNext()) {
+      let datafield: Element;
+      if (datafield=datafields.iterateNext() as Element) {
         if (field.selectedRefineOption) {
           datafield.textContent=field.selectedRefineOption.value;
           let element = doc.createElement("subfield");
@@ -104,10 +105,10 @@ export class RefineTableDataSource implements DataSource<Bib> {
         }
       }
       let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
-      let datafield, subfield: Node;
-      while (datafield=datafields.iterateNext()) {
+      let datafield: Element, subfield: Element;
+      while (datafield=datafields.iterateNext() as Element) {
         let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, datafield);
-        if(subfield=subfields.iterateNext()) {
+        if(subfield=subfields.iterateNext() as Element) {
           refineFields.push({
             tag: datafield.getAttribute('tag'),
             subfield: subfieldCode, 
