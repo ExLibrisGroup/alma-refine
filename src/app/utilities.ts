@@ -31,6 +31,9 @@ export const Utils = {
           .filter( key => predicate(obj[key]) )
           .reduce( (res, key) => (res[key] = obj[key], res), {} as T ),
 
+  combine: <T>(objects: Array<T>): T => {
+    return Object.assign({}, ...objects);
+  },
 
   /* Adds Element to dom and returns it */
   dom: (name: string, options: {parent?: Element, text?: string, className?: string, 

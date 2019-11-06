@@ -20,6 +20,8 @@ export class RefineTableDataSource implements DataSource<Bib> {
   public  isLoading = this.loadingSubject.asObservable();
   private recordCountSubject = new BehaviorSubject<number>(0);
   public  recordCount = this.recordCountSubject.asObservable();
+  private percentCompleteSubject = new BehaviorSubject<number>(-1);
+  public  percentComplete = this.percentCompleteSubject.asObservable();
 
   constructor(private bibsService: BibsService, private configService: ConfigService,
     private refineService: RefineService) {}
@@ -33,6 +35,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
     this.loadingSubject.complete();
     this.recordCountSubject.complete();
     this.refinementsSubject.complete();
+    this.percentCompleteSubject.complete();
   }
 
   async loadBibs( { setId = this._setId, pageIndex = 0, pageSize = 10 } = {} ) {
@@ -60,15 +63,22 @@ export class RefineTableDataSource implements DataSource<Bib> {
   }
 
   async saveRefinements() {
+    this.percentCompleteSubject.next(0);
     this.loadingSubject.next(true);
     /* Filter refinements for those which have 1 or more refined fields */
-    let updates = Utils.filter(Object.assign({}, ...Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
+    let updates = Utils.filter(Utils.combine(Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
     let bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
     let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
+    let complete = 0;
     /* Chunk into 10 updates at at time */
     await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise()))
-      .then(data=>console.log('Created ' + data.map(b=>b.mms_id).join(', '))));
+      .then(data=> { 
+        complete += data.length; 
+        this.percentCompleteSubject.next((complete/applied.length)*100);
+        console.log('Created ' + data.map(b=>b.mms_id).join(', '))
+      }));
     this.loadingSubject.next(false);
+    this.percentCompleteSubject.next(-1);
   }
 
   private applyRefinements( bib: Bib, refinements: RefineField[]): Bib {

@@ -53,3 +53,7 @@ div.refine-options {
 div.refine-action-buttons {
   margin-left: auto;
 }
+
+.refine-progress-bar {
+  width: 50%;
+}

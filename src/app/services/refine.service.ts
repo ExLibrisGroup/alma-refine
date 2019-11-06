@@ -24,7 +24,7 @@ export class RefineService {
       let params = new HttpParams().set('queries', JSON.stringify(Utils.pick(keys)(queries)));
       return this.httpClient.get<RefineResponse>(refineServiceDef.url, {params: params}).toPromise();
     });
-    let results: RefineResponse = await Promise.all(promises).then(data => Object.assign({},...data));
+    let results = await Promise.all(promises).then(data => Utils.combine(data));
     /* Update refinements list with results from service */
     Object.values(refinements).forEach(value=>{
       value.forEach((o,i,a) => a[i].refineOptions=results[crc32(o.value)].result.slice(0,10).map(e=>(Object.assign({value:e.name}, this.setUris(refineServiceDef, e.id)))));

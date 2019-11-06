@@ -19,7 +19,8 @@ import {
    MatCardModule,
    MatAutocompleteModule,
    MatListModule,
-   MatIconModule
+   MatIconModule,
+   MatProgressBarModule
  } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -54,6 +55,7 @@ import { RefineBibComponent } from './refine-bib/refine-bib.component';
       MatListModule,
       MatIconModule,
       MatAutocompleteModule,
+      MatProgressBarModule,
       ReactiveFormsModule,
       FormsModule
    ],

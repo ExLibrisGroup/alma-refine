@@ -20,10 +20,13 @@ import { Utils } from '../utilities';
 })
 export class RefineTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'refine'];
-  dataSource: RefineTableDataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
+  dataSource: RefineTableDataSource;
   refineServices: Observable<RefineServiceDef[]>;
   previewSize: { height: number, width: number } | {};
   selectedSet: Set;
+  recordCount: number;
+  isLoading: boolean;
+  percentComplete: number;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   serviceSelect = new FormControl('');
@@ -34,9 +37,18 @@ export class RefineTableComponent implements OnInit {
   ngOnInit() {
     this.refineServices = this.configService.getRefineServices();
     this.pingProxy();
+    this.init();
   }
 
   pingProxy() { this.configService.ping().then(() => setTimeout(() => this.pingProxy(), 240000))};
+
+  init() {
+    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
+    /* Subscribe to datasource observables */
+    this.dataSource.recordCount.subscribe(result=>this.recordCount = result);
+    this.dataSource.isLoading.subscribe(result=>this.isLoading = result);
+    this.dataSource.percentComplete.subscribe(result=>this.percentComplete = result);
+  }
 
   ngAfterViewInit() {
     this.setInitialRefineService();
@@ -82,7 +94,7 @@ export class RefineTableComponent implements OnInit {
   }
 
   clear() {
-    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
+    this.init();
   }
 
   async save() {
