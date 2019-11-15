@@ -25,11 +25,10 @@ export class RefineBibComponent  {
         parent: parent,
         className: 'refine-preview-pane',
         attributes: [
-          { att: 'src', val: url },
-          { att: 'frameBorder', val: '0' },
-          { att: 'height', val: this.previewSize.height || '200' },
-          { att: 'width', val: this.previewSize.width || '350', },
-          { att: 'scrolling', val: 'no'}
+          [ 'src', url ], ['frameBorder', '0' ],
+          [ 'height', this.previewSize.height || '200' ],
+          [ 'width', this.previewSize.width || '350' ],
+          [ 'scrolling', 'no' ]
         ]
       });
       if (parent) parent.parentNode.insertBefore(iframe, parent.nextSibling);

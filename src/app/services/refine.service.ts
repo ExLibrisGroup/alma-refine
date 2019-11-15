@@ -27,7 +27,10 @@ export class RefineService {
     let results = await Promise.all(promises).then(data => Utils.combine(data));
     /* Update refinements list with results from service */
     Object.values(refinements).forEach(value=>{
-      value.forEach((o,i,a) => a[i].refineOptions=results[crc32(o.value)].result.slice(0,10).map(e=>(Object.assign({value:e.name}, this.setUris(refineServiceDef, e.id)))));
+      value.forEach((o,i,a) => {
+        a[i].refineOptions=results[crc32(o.value)].result.slice(0,10).map(e=>(Object.assign({value:e.name}, this.setUris(refineServiceDef, e.id))))
+        if (a[i].selectedRefineOption) a[i].selectedRefineOption=a[i].refineOptions.find(o=>o.uri===a[i].selectedRefineOption.uri);
+      });
     });
     return refinements;
   }

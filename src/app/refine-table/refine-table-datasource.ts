@@ -16,12 +16,9 @@ export class RefineTableDataSource implements DataSource<Bib> {
   private refinements: Refinements = <Refinements>{};
   private refinementsSubject = new BehaviorSubject<Refinements>(this.refinements);
   public  refinements$ = this.refinementsSubject.asObservable();
-  private loadingSubject = new BehaviorSubject<boolean>(false);
-  public  isLoading = this.loadingSubject.asObservable();
-  private recordCountSubject = new BehaviorSubject<number>(0);
-  public  recordCount = this.recordCountSubject.asObservable();
-  private percentCompleteSubject = new BehaviorSubject<number>(-1);
-  public  percentComplete = this.percentCompleteSubject.asObservable();
+  private status: RefineDataSourceStatus = { isLoading: false, recordCount: 0, percentComplete: -1 };
+  private statusSubject = new BehaviorSubject<RefineDataSourceStatus>(this.status);
+  public  status$ = this.statusSubject.asObservable();
 
   constructor(private bibsService: BibsService, private configService: ConfigService,
     private refineService: RefineService) {}
@@ -32,21 +29,19 @@ export class RefineTableDataSource implements DataSource<Bib> {
 
   disconnect(collectionViewer: CollectionViewer): void {
     this.bibsSubject.complete();
-    this.loadingSubject.complete();
-    this.recordCountSubject.complete();
     this.refinementsSubject.complete();
-    this.percentCompleteSubject.complete();
+    this.statusSubject.complete();
   }
 
   async loadBibs( { setId = this._setId, pageIndex = 0, pageSize = 10 } = {} ) {
     this._setId = setId;
-    this.loadingSubject.next(true);
+    this.statusSubject.next(this.setStatus({isLoading: true}));
     let setMembers = await this.bibsService.getMmsIdsFromSet(setId, pageIndex, pageSize).toPromise();
-    this.recordCountSubject.next(setMembers.total_record_count), 
+    this.statusSubject.next(this.setStatus({recordCount: setMembers.total_record_count}));
     this.bibsService.getBibs(setMembers.member.map(m=>m.id))
       .pipe(
         catchError(() => of (<Bibs>{})), 
-        finalize(()=>this.loadingSubject.next(false))
+        finalize(()=>this.statusSubject.next(this.setStatus({isLoading: false})))
       )
       .subscribe(bibs=>{ 
         this.loadRefinements(bibs.bib); 
@@ -55,45 +50,50 @@ export class RefineTableDataSource implements DataSource<Bib> {
   }
 
   async loadRefinements( bibs: Bib[] ) {
-    // TODO: Set selected field if $0 exists
-    bibs.forEach(bib=>this.refinements[bib.mms_id]=this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
-    let refinements: Refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
+    bibs.forEach(bib=>this.refinements[bib.mms_id]=this.refinements[bib.mms_id] || this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
+    let refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
     this.refinementsSubject.next(refinements);
     refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
   }
 
   async saveRefinements() {
-    this.percentCompleteSubject.next(0);
-    this.loadingSubject.next(true);
+    this.statusSubject.next(this.setStatus({percentComplete: 0, isLoading: true}))
     /* Filter refinements for those which have 1 or more refined fields */
     let updates = Utils.filter(Utils.combine(Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
-    let bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
-    let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
-    let complete = 0;
-    /* Chunk into 10 updates at at time */
-    await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise()))
-      .then(data=> { 
-        complete += data.length; 
-        this.percentCompleteSubject.next((complete/applied.length)*100);
-        console.log('Created ' + data.map(b=>b.mms_id).join(', '))
-      }));
-    this.loadingSubject.next(false);
-    this.percentCompleteSubject.next(-1);
+    if (Object.keys(updates).length > 0) {
+      let bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
+      let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
+      let complete = 0;
+      /* Chunk into 10 updates at at time */
+      await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise()))
+        .then(data=> { 
+          complete += data.length; 
+          this.statusSubject.next(this.setStatus({percentComplete: (complete/applied.length)*100}))
+          console.log('Created ' + data.map(b=>b.mms_id).join(', '))
+        }));
+    }
+    this.statusSubject.next(this.setStatus({isLoading: false, percentComplete: -1}));
+  }
+
+  private setStatus(options: { isLoading?: boolean, percentComplete?: number, recordCount?: number}): RefineDataSourceStatus {
+    Object.entries(options).forEach(([key, value]) => this.status[key] = value);
+    return this.status;
   }
 
   private applyRefinements( bib: Bib, refinements: RefineField[]): Bib {
     const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
     refinements.forEach(field=>{
-      let datafields = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`)
-      let datafield: Element;
-      if (datafield=datafields.iterateNext() as Element) {
+      let datafield = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`, { single: true }).singleNodeValue;
+      if (datafield) {
         if (field.selectedRefineOption) {
           datafield.textContent=field.selectedRefineOption.value;
-          let element = doc.createElement("subfield");
-          element.setAttribute('code','0');
-          let txt = doc.createTextNode(field.selectedRefineOption.uri);
-          element.appendChild(txt);
-          datafield.parentNode.appendChild(element);
+          /* Add subfield 0 if not exists */
+          let uri = Utils.select(doc, 'subfield[@code="0"]', { context: datafield.parentNode, single: true }).singleNodeValue;
+          if (uri) {
+            uri.textContent = field.selectedRefineOption.uri
+          } else {
+            Utils.dom("subfield", { parent: datafield.parentNode, text: field.selectedRefineOption.uri, attributes: [ ["code", "0"] ]});
+          }
         }
       }
     }) 
@@ -104,7 +104,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
   private extractRefineFields( marcxml: any, fields: string[]): RefineField[] {
     const doc = new DOMParser().parseFromString(marcxml, "application/xml");
 
-    let refineFields = [];
+    let refineFields = new Array<RefineField>();
     
     fields.forEach(field=>{
       let [tag, subfieldCode = 'a'] = field.split('$');
@@ -117,12 +117,14 @@ export class RefineTableDataSource implements DataSource<Bib> {
       let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {
-        let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, datafield);
+        let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, {context: datafield});
+        let uri = Utils.select(doc, 'subfield[@code="0"]', {context: datafield, single: true});
         if(subfield=subfields.iterateNext() as Element) {
           refineFields.push({
             tag: datafield.getAttribute('tag'),
             subfield: subfieldCode, 
-            value: subfield.textContent
+            value: subfield.textContent,
+            selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null
           })
         }
       };
@@ -132,3 +134,8 @@ export class RefineTableDataSource implements DataSource<Bib> {
 
 }
 
+export interface RefineDataSourceStatus {
+  isLoading: boolean;
+  recordCount: number;
+  percentComplete: number;
+}

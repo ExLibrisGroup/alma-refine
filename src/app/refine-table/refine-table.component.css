@@ -15,7 +15,7 @@ td.mat-cell, th.mat-header-cell {
 }
 
 .loading-shade {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;
@@ -25,12 +25,6 @@ td.mat-cell, th.mat-header-cell {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.loading-error {
-  color: #980000;
-  max-width: 360px;
-  text-align: center;
 }
 
 .refine-options app-select-set {

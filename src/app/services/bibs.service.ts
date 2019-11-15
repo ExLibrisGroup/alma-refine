@@ -23,7 +23,7 @@ export class BibsService {
     return this.httpClient.get<SetMembers>(environment.proxyUrl + `/almaws/v1/conf/sets/${setId}/members`, 
     { params: new HttpParams()
       .set('limit', pageSize.toString())
-      .set('offset', (pageSize*pageNumber+1).toString())
+      .set('offset', (pageSize*pageNumber).toString())
     });
   }
 

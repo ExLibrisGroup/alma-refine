@@ -43,11 +43,9 @@ export class RefineTableComponent implements OnInit {
   pingProxy() { this.configService.ping().then(() => setTimeout(() => this.pingProxy(), 240000))};
 
   init() {
-    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
     /* Subscribe to datasource observables */
-    this.dataSource.recordCount.subscribe(result=>this.recordCount = result);
-    this.dataSource.isLoading.subscribe(result=>this.isLoading = result);
-    this.dataSource.percentComplete.subscribe(result=>this.percentComplete = result);
+    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
+    this.dataSource.status$.subscribe(result => ({isLoading: this.isLoading, recordCount: this.recordCount, percentComplete: this.percentComplete} = result))
   }
 
   ngAfterViewInit() {
@@ -90,7 +88,7 @@ export class RefineTableComponent implements OnInit {
 
   load() {
     this.setPreviewSize();
-    this.dataSource.loadBibs({setId: this.selectedSet.id});
+    this.dataSource.loadBibs({ setId: this.selectedSet.id, pageSize: this.paginator.pageSize });
   }
 
   clear() {
