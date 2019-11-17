@@ -96,7 +96,8 @@ export class RefineTableComponent implements OnInit {
   }
 
   async save() {
-    await this.dataSource.saveRefinements();
+    let mmsIds = await this.dataSource.saveRefinements();
+    alert(`Successfully updated ${mmsIds.length} records.`);
     this.clear();
   }
 

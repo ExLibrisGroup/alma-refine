@@ -56,23 +56,28 @@ export class RefineTableDataSource implements DataSource<Bib> {
     refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
   }
 
-  async saveRefinements() {
+  async saveRefinements(): Promise<Array<string>> {
     this.statusSubject.next(this.setStatus({percentComplete: 0, isLoading: true}))
     /* Filter refinements for those which have 1 or more refined fields */
     let updates = Utils.filter(Utils.combine(Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
+    let mmsIds: Array<string> = [];
+    let complete = 0;
     if (Object.keys(updates).length > 0) {
-      let bibs = await this.bibsService.getBibs(Object.keys(updates)).toPromise();
-      let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
-      let complete = 0;
       /* Chunk into 10 updates at at time */
-      await Utils.asyncForEach(Utils.chunk(applied, 10), async (batch) => await Promise.all(batch.map(bib => this.bibsService.createBib(bib).toPromise()))
-        .then(data=> { 
-          complete += data.length; 
-          this.statusSubject.next(this.setStatus({percentComplete: (complete/applied.length)*100}))
-          console.log('Created ' + data.map(b=>b.mms_id).join(', '))
-        }));
+      await Utils.asyncForEach(Utils.chunk(Object.keys(updates), 10), async (batch) => {
+        let bibs = await this.bibsService.getBibs(batch).toPromise();
+        let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
+        await Promise.all(applied.map(bib => this.bibsService.createBib(bib).toPromise()))
+          .then(data=> { 
+            complete += data.length; 
+            this.statusSubject.next(this.setStatus({percentComplete: (complete/Object.keys(updates).length)*100}));
+            mmsIds.push(...data.map(b=>b.mms_id));
+            console.log('Created ' + data.map(b=>b.mms_id).join(', '));
+          });        
+      });
     }
     this.statusSubject.next(this.setStatus({isLoading: false, percentComplete: -1}));
+    return mmsIds;
   }
 
   private setStatus(options: { isLoading?: boolean, percentComplete?: number, recordCount?: number}): RefineDataSourceStatus {
