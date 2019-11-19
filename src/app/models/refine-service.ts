@@ -2,14 +2,19 @@ export interface RefineServiceDef {
   name: string,
   description: string,
   url: string,
-  fields: string[],
+  fields: (string|RefineServiceField)[],
   serviceDetails: any
+}
+
+export interface RefineServiceField {
+  field: string, 
+  indexes: string | string[]
 }
 
 export interface RefineQuery {
   query: string,
   limit?: number,
-  type?: string
+  type?: string | string[]
 }
 
 export interface RefineQueries {

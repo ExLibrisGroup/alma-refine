@@ -17,7 +17,7 @@ export class RefineService {
   /** Calls refine service to query specified terms */
   async callRefineService(refinements: Refinements, refineServiceDef: RefineServiceDef) {
     /* Convert refinements into de-duped list of Refine service queries */
-    let queries: RefineQueries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => ({ ...a, [crc32(c.value)]: {query: c.value, limit: 10}}), {});
+    let queries: RefineQueries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => ({ ...a, [crc32(c.value)]: {query: c.value, limit: 10, type: c.indexes}}), {});
     /* Call refine service in chunks */ 
     let results = await Promise.all(Utils.chunk(Object.keys(queries), this.batchSize).map(keys=>{
       let params = new HttpParams().set('queries', JSON.stringify(Utils.pick(keys)(queries)));

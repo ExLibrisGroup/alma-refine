@@ -4,9 +4,9 @@
     "description": "",
     "url": "https://services.getty.edu/vocab/reconcile/",
     "fields": [
-      "1xx$a",
-      "6xx$a",
-      "7xx"
+      { "field": "1xx$a", "indexes": "/ulan" },
+      { "field": "6xx$a", "indexes": "/all" },
+      { "field": "7xx", "indexes": "/ulan" }
     ]
   },
   {

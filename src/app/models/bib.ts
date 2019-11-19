@@ -15,6 +15,7 @@ export interface RefineField {
   tag: string;
   subfield: string;
   value: string;
+  indexes?: string | string[],
   refineOptions?: RefineOption[],
   selectedRefineOption?: RefineOption 
 }

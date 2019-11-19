@@ -6,6 +6,7 @@ import { catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
+import { RefineServiceField } from '../models/refine-service';
 
 export class RefineTableDataSource implements DataSource<Bib> {
 
@@ -106,13 +107,13 @@ export class RefineTableDataSource implements DataSource<Bib> {
     return bib;
   }
 
-  private extractRefineFields( marcxml: any, fields: string[]): RefineField[] {
+  private extractRefineFields( marcxml: any, fields: (string|RefineServiceField)[]): RefineField[] {
     const doc = new DOMParser().parseFromString(marcxml, "application/xml");
 
     let refineFields = new Array<RefineField>();
     
     fields.forEach(field=>{
-      let [tag, subfieldCode = 'a'] = field.split('$');
+      let [tag, subfieldCode = 'a'] = ((typeof field === 'string') ? field : field.field).split('$');
       let xpath = [];
       for (var i = 0; i < tag.length; i++) {
         if (tag.charAt(i)!='x') {
@@ -129,7 +130,8 @@ export class RefineTableDataSource implements DataSource<Bib> {
             tag: datafield.getAttribute('tag'),
             subfield: subfieldCode, 
             value: subfield.textContent,
-            selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null
+            selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null,
+            indexes: (typeof field !== 'string') ? field.indexes : null
           })
         }
       };
