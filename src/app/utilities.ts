@@ -3,7 +3,7 @@ export const Utils = {
   /**  Returns object with properties specified in the array */
   pick: (props: Array<string>) => <T>(o: T) => props.reduce((a, e) => ({ ...a, [e]: o[e] }), {}) as T,
 
-  /* Chunks array and returns array of arrays of specified size */
+  /** Chunks array and returns array of arrays of specified size */
   chunk: <T>(inputArray: Array<T>, size:number): Array<Array<T>> => {
     return inputArray.reduce((all,one,i) => {
       const ch = Math.floor(i/size); 

@@ -10,21 +10,19 @@ import { crc32 } from 'js-crc';
 })
 export class RefineService {
 
-  constructor(
-    private httpClient: HttpClient
-  ) { }
+  constructor( private httpClient: HttpClient ) { }
 
   private batchSize:number = 10;
 
+  /** Calls refine service to query specified terms */
   async callRefineService(refinements: Refinements, refineServiceDef: RefineServiceDef) {
     /* Convert refinements into de-duped list of Refine service queries */
     let queries: RefineQueries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => ({ ...a, [crc32(c.value)]: {query: c.value, limit: 10}}), {});
     /* Call refine service in chunks */ 
-    let promises: Array<Promise<RefineResponse>> = Utils.chunk(Object.keys(queries), this.batchSize).map(keys=>{
+    let results = await Promise.all(Utils.chunk(Object.keys(queries), this.batchSize).map(keys=>{
       let params = new HttpParams().set('queries', JSON.stringify(Utils.pick(keys)(queries)));
       return this.httpClient.get<RefineResponse>(refineServiceDef.url, {params: params}).toPromise();
-    });
-    let results = await Promise.all(promises).then(data => Utils.combine(data));
+    })).then(data => Utils.combine(data));
     /* Update refinements list with results from service */
     Object.values(refinements).forEach(value=>{
       value.forEach((o,i,a) => {

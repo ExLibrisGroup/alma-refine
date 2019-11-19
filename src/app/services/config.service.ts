@@ -21,10 +21,12 @@ export class ConfigService {
     );
   }
 
+  /** Keep alive for an Alma proxy */
   ping() {
     return this.httpClient.get(environment.proxyUrl + '/almaws/v1/conf/test', { responseType: 'text' }).toPromise();
   }
 
+  /** Retrieve refine services from config file */
   getRefineServices(): Observable<RefineServiceDef[]> {
     return this.httpClient.get('./assets/refineServices.json') as Observable<RefineServiceDef[]>;
   }

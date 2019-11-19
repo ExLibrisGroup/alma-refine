@@ -92,6 +92,7 @@ export class RefineTableComponent implements OnInit {
   }
 
   clear() {
+    this.paginator.pageIndex = 0;
     this.init();
   }
 
