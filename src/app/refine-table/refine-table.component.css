@@ -6,6 +6,10 @@ td.mat-cell, th.mat-header-cell {
   padding: 10px;
 }
 
+td.mat-column-title, td.mat-column-id {
+  line-height: 60px;
+}
+
 .refine-table-container {
   margin-bottom: 30px;
 }

@@ -16,5 +16,13 @@
     "fields": [
       "100$a"
     ]
+  },
+  {
+    "name": "Geonames",
+    "description": "",
+    "url": "https://geonames-openrefine.herokuapp.com/reconcile",
+    "fields": [
+      "751$a"
+    ]
   }
 ]

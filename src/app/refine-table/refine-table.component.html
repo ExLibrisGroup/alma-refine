@@ -1,5 +1,5 @@
 <div class="refine-options">
-  <app-select-set
+  <app-select-set #selectSet
     (setSelected)=onSetSelected($event)>
   </app-select-set>
 
@@ -10,7 +10,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-stroked-button (click)="load()" [disabled]="recordCount > 0" color="primary">Begin Refining</button>
+  <button mat-stroked-button (click)="load()" [disabled]="recordCount > 0 || !selectedSet || !configService.selectedRefineService" color="primary">Begin Refining</button>
   <div class="refine-action-buttons">
     <button mat-raised-button (click)="clear()" [disabled]="recordCount == 0">Clear</button>
     <button mat-raised-button (click)="save()" color="primary" [disabled]="recordCount == 0">Save Refinements</button>

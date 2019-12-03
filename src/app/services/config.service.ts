@@ -37,10 +37,11 @@ export class ConfigService {
 
   set selectedRefineService(value: RefineServiceDef) {
     this._selectedRefineService = value;
-    this._selectedRefineService.serviceDetails = {};
-    try {
-      this.httpClient.get(this._selectedRefineService.url)
-        .subscribe(data=>this._selectedRefineService.serviceDetails=data);
-    } catch(e) {  }
+    if (value) {
+      try {
+        this.httpClient.get(this._selectedRefineService.url)
+          .subscribe(data=>this._selectedRefineService.serviceDetails=data);
+      } catch(e) {  }
+    }
   }
 }

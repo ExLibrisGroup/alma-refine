@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Bib } from '../models/bib';
 import { Set } from '../models/set';
@@ -12,6 +12,7 @@ import { FormControl } from '@angular/forms';
 import { RefineTableDataSource } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
+import { SelectSetComponent } from '../select-set/select-set.component';
 
 @Component({
   selector: 'app-refine-table',
@@ -29,9 +30,10 @@ export class RefineTableComponent implements OnInit {
   percentComplete: number;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild('selectSet', {static: false}) selectSetComponent: SelectSetComponent;
   serviceSelect = new FormControl('');
 
-  constructor( private bibsService: BibsService, private configService: ConfigService,
+  constructor( private bibsService: BibsService, public configService: ConfigService,
     private refineService: RefineService ) { }
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class RefineTableComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.setInitialRefineService();
+    //this.setInitialRefineService();
     this.paginator.page
       .pipe(
         tap(() => this.dataSource.loadBibs(
@@ -69,7 +71,7 @@ export class RefineTableComponent implements OnInit {
   }
 
   compareRefineServices(a: RefineServiceDef, b: RefineServiceDef): boolean {
-    return a.url === b.url;
+    return a && b ? a.url === b.url : a === b;
   }
 
   onRefineServiceSelected(event: MatSelectChange) {
@@ -79,7 +81,7 @@ export class RefineTableComponent implements OnInit {
   setPreviewSize() {
     let serviceDetails = this.configService.selectedRefineService.serviceDetails;
     this.previewSize = serviceDetails && serviceDetails.preview ? 
-      Utils.pick(['height', 'width'])(serviceDetails) : { height: 200, width: 350 };
+      Utils.pick(['height', 'width'])(serviceDetails.preview) : { height: 200, width: 350 };
   }
 
   onSetSelected(set: Set) {
@@ -93,6 +95,10 @@ export class RefineTableComponent implements OnInit {
 
   clear() {
     this.paginator.pageIndex = 0;
+    this.serviceSelect.reset();
+    this.selectSetComponent.formControl.reset();
+    this.configService.selectedRefineService = null;
+    this.selectedSet = null;
     this.init();
   }
 
