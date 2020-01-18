@@ -22,7 +22,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
   public  status$ = this.statusSubject.asObservable();
 
   constructor(private bibsService: BibsService, private configService: ConfigService,
-    private refineService: RefineService) {}
+    private refineService: RefineService, private isApplyRefinementsToAllValues = true) {}
 
   connect(collectionViewer: CollectionViewer): Observable<Bib[]> {
     return this.bibsSubject.asObservable();
@@ -53,8 +53,38 @@ export class RefineTableDataSource implements DataSource<Bib> {
   async loadRefinements( bibs: Bib[] ) {
     bibs.forEach(bib=>this.refinements[bib.mms_id]=this.refinements[bib.mms_id] || this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
     let refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
+    this.applyRefinementsToAllValues(refinements);
     this.refinementsSubject.next(refinements);
     refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
+  }
+
+  compareField(field1: RefineField, field2: RefineField) {
+    return field1.tag === field2.tag && field1.subfield === field2.subfield && field1.value === field2.value;
+  }
+
+  /**
+   * Applies refinements to all fields with the same value
+   * @param target - The BIBs to which the specified refinements should be applied. Limit when BIBs are loaded.
+   * @param field - The field to check in the target. Specified when a refinement is selected. Default is to check all refined fields.
+   */
+  applyRefinementsToAllValues(target: Refinements, field: RefineField = null) {
+    if (this.isApplyRefinementsToAllValues) {
+      Object.values(target).forEach(b=>b.forEach(f=>{
+        if (field) {
+          if (this.compareField(field, f))
+            f.selectedRefineOption = field.selectedRefineOption;
+        } else {
+          /* Apply all refined fields */
+          const refinedFields: RefineField[] = [].concat(...Object.values(this.refinements)).filter(f=>f.selectedRefineOption);
+          if (refinedFields.some(rf=>this.compareField(rf, f)))
+            f.selectedRefineOption = refinedFields.find(rf=>this.compareField(rf, f)).selectedRefineOption
+        }
+      }))
+    }
+  }
+
+  onRefinementSelected(field: RefineField) {
+    this.applyRefinementsToAllValues(this.refinements, field);
   }
 
   async saveRefinements(): Promise<Array<string>> {
@@ -120,6 +150,9 @@ export class RefineTableDataSource implements DataSource<Bib> {
           xpath.push(`substring(@tag,${i+1},1)="${tag.charAt(i)}"`);
         }
       }
+      if (typeof field != 'string' && field.subfield2) 
+        xpath.push(`contains("${Array.isArray(field.subfield2) ? field.subfield2.join(' ') : field.subfield2}", subfield[@code="2"]) and string-length(subfield[@code="2"]) != 0`);
+      
       let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {

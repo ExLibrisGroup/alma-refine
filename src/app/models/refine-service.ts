@@ -2,12 +2,14 @@ export interface RefineServiceDef {
   name: string,
   description: string,
   url: string,
+  prefix?: string,
   fields: (string|RefineServiceField)[],
   serviceDetails: any
 }
 
 export interface RefineServiceField {
   field: string, 
+  subfield2?: string | string[],
   indexes: string | string[]
 }
 

@@ -46,7 +46,7 @@
       <th mat-header-cell *matHeaderCellDef>Refine</th>
       <td mat-cell *matCellDef="let row">
         <app-refine-bib [refinements]="(dataSource.refinements$ | async)[row.mms_id]"
-          [previewSize]="previewSize">
+          [previewSize]="previewSize" (refinementSelected)="dataSource.onRefinementSelected($event)">
         </app-refine-bib>
       </td>
     </ng-container>

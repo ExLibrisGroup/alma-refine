@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
 import { RefineField, RefineOption } from '../models/bib';
 import { Utils } from '../utilities';
 
@@ -11,6 +11,7 @@ import { Utils } from '../utilities';
 export class RefineBibComponent  {
   @Input() refinements: RefineField[];
   @Input() previewSize;
+  @Output() refinementSelected = new EventEmitter();
   
   constructor() { }
 

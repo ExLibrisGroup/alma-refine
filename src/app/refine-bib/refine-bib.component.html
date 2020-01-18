@@ -5,7 +5,7 @@
       <mat-label class="refine-options-message" *ngIf="!field.refineOptions">Retrieving refinements...</mat-label>
       <mat-label class="refine-options-message" *ngIf="field.refineOptions && field.refineOptions.length==0">No refinements found</mat-label>      
       <mat-form-field class="refine-bib-options" *ngIf="field.refineOptions && field.refineOptions.length>0">
-          <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" [compareWith]="compareRefineOptions">
+          <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" [compareWith]="compareRefineOptions" (selectionChange)="refinementSelected.emit(field)">
             <mat-select-trigger>{{field.selectedRefineOption?.value}}</mat-select-trigger>
             <mat-option (click)="field.selectedRefineOption=null">None</mat-option>
             <mat-option *ngFor="let option of field.refineOptions" [value]="option">

@@ -3,10 +3,11 @@
     "name": "Getty Vocabularies",
     "description": "",
     "url": "https://services.getty.edu/vocab/reconcile/",
+    "prefix": "http://vocab.getty.edu/",
     "fields": [
       { "field": "1xx$a", "indexes": "/ulan" },
-      { "field": "6xx$a", "indexes": "/all" },
-      { "field": "7xx", "indexes": "/ulan" }
+      { "field": "6xx$a", "indexes": "/all", "subfield2": ["ulan", "aat", "tgn"] },
+      { "field": "7xx", "indexes": "/ulan", "subfield2": "ulan" }
     ]
   },
   {
