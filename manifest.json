@@ -1,0 +1,15 @@
+{
+   "$schema": "./manifest.schema.json",
+   "id": "alma-refine",
+   "title": "Alma Refine",
+   "description": "Refine Alma BIB records using OpenRefine services",
+   "author": "Josh Weisman",
+   "fullscreen": {
+      "allow": true,
+      "open": false
+   },
+   "icon": {
+      "type": "url",
+      "value": "/assets/openrefine-logo.png"
+   }
+}

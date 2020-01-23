@@ -1,0 +1,54 @@
+.full-width-table {
+  width: 100%;
+}
+
+mat-cell, mat-header-cell {
+  padding: 10px;
+}
+
+mat-column-title, mat-column-id {
+  line-height: 60px;
+}
+
+.refine-table-container {
+  margin-bottom: 30px;
+}
+
+.loading-shade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.align-top {
+  vertical-align: top;
+}
+
+.refine-progress-bar {
+  width: 50%;
+}
+
+.refine-options button {
+  margin-right: 8px;
+  height: 45px;
+}
+
+div.refine-options {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+div.refine-action-buttons {
+  margin-left: auto;
+}
+
+app-refine-bib {
+  width: 100%;
+}

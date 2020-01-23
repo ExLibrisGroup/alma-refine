@@ -1,0 +1,24 @@
+{
+	"Main": {
+		"BeginRefining": "Begin Refining",
+		"DisplayedIds": "Refine the {{length}} records on this page",
+		"DisplayedRecords": "Displayed Records",
+		"Intro": "To begin refining records, navigate to a list of Bibliographic records or select a set.",
+		"SelectSet": "Select a set",
+		"SelectService": "Select a refine service"
+	},
+	"Refine": {
+		"MMS": "MMS ID",
+		"RefineFields": "Refine Fields",
+		"Save": "Save",
+		"Title": "Title",
+		"Back": "Back"
+	},
+	"RefineBib": {
+		"NoRefinements": "No refinements found",
+		"Retrieving": "Retrieving refinements...."
+	},
+	"SetSelect": {
+		"SelectSet": "Select a set"
+	}
+}

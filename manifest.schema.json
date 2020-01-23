@@ -1,0 +1,219 @@
+{
+  "definitions": {
+    "label": {
+      "$id": "#/definitions/label",
+      "type": [
+        "string",
+        "array"
+      ],
+      "description": "Translated label",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "description": "Language code"
+          },
+          "text": {
+            "type": "string",
+            "description": "Translated text in specified language"
+          }
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://exlibrisgroup.com/cloudapps/manifest.schema.json",
+  "title": "Ex Libris CloudApp Manifest",
+  "description": "This manifest will contain CloudApp metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "author",
+    "title",
+    "description"
+  ],
+  "properties": {
+    "$schema": {
+      "$id": "#/properties/$schema",
+      "type": "string"
+    },
+    "id": {
+      "$id": "#/properties/id",
+      "title": "CloudApp ID",
+      "description": "CloudApp's unique identifier",
+      "type": "string"
+    },
+    "version": {
+      "$id": "#/properties/version",
+      "title": "CloudApp Version",
+      "type": "string"
+    },
+    "author": {
+      "$id": "#/properties/author",
+      "title": "CloudApp Author",
+      "description": "CloudApp author name",
+      "type": "string"
+    },
+    "title": {
+      "$id": "#/properties/title",
+      "$ref": "#/definitions/label",
+      "title": "CloudApp Title",
+      "description": "CloudApp title text"
+    },
+    "subtitle": {
+      "$id": "#/properties/subtitle",
+      "$ref": "#/definitions/label",
+      "title": "CloudApp Subtitle",
+      "description": "CloudApp subtitle text"
+    },
+    "description": {
+      "$id": "#/properties/description",
+      "$ref": "#/definitions/label",
+      "title": "CloudApp Description",
+      "description": "CloudApp description text"
+    },
+    "icon": {
+      "$id": "#/properties/icon",
+      "title": "CloudApp Icon",
+      "description": "CloudApp Icon",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$id": "#/properties/icon/type",
+          "title": "CloudApp Icon Type",
+          "type": "string",
+          "enum": [
+            "font",
+            "url"
+          ]
+        },
+        "value": {
+          "$id": "#/properties/icon/value",
+          "title": "CloudApp Icon Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ]
+    },
+    "fullscreen": {
+      "$id": "#/properties/fullscreen",
+      "title": "CloudApp Fullscreen Settings",
+      "type": "object",
+      "properties": {
+        "allow": {
+          "$id": "#/properties/fullscreen/allow",
+          "title": "CloudApp Allow Fullscreen",
+          "description": "Allow the CloudApp to be presented in fullscreen",
+          "type": "boolean",
+          "default": true
+        },
+        "open": {
+          "$id": "#/properties/fullscreen/open",
+          "title": "Open CloudApp in Fullscreen",
+          "description": "Indicates that the CloudApp should be opened in fullscreen",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "dependencies": {
+        "open": {
+          "properties": {
+            "allow": {
+              "enum": [
+                true
+              ]
+            }
+          }
+        }
+      },
+      "default": {
+        "allow": true,
+        "open": false
+      }
+    },
+    "pages": {
+      "type": "object",
+      "title": "CloudApp Pages",
+      "description": "Use to specify availability and location of special pages",
+      "properties": {
+        "settings": {
+          "$id": "#/properties/pages/settings",
+          "title": "CloudApp Settings Page",
+          "description": "CloudApp settings page location (must be in app)",
+          "type": "string"
+        },
+        "help": {
+          "$id": "#/properties/pages/help",
+          "title": "CloudApp Help Page",
+          "description": "CloudApp help page location (may be external)",
+          "type": "string"
+        }
+      }
+    },
+    "entities": {
+      "$id": "#/properties/entities",
+      "title": "CloudApp Supported Entity Types",
+      "description": "Entity types that the CloudApp supports",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "roles": {
+      "$id": "#/properties/roles",
+      "title": "CloudApp Roles",
+      "description": "Roles that the CloudApp requires",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "contentSecurity": {
+      "$id": "#/properties/contentSecurity",
+      "type": "object",
+      "properties": {
+        "connectSrc": {
+          "$id": "#/properties/contentSecurity/connectSrc",
+          "title": "CloudApp External URLs",
+          "description": "External URLs used in the CloudApp",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "sandbox": {
+          "$id": "#/properties/contentSecurity/sandbox",
+          "title": "CloudApp sandboxing options",
+          "description": "Enable certain attributes for CloudApp sandbox",
+          "type": "object",
+          "properties": {
+            "modals": {
+              "$id": "#/properties/contentSecurity/sandbox/modals",
+              "title": "Allow modals",
+              "description": "Allow the CloudApp to open modal windows",
+              "type": "boolean",
+              "default": false
+            },
+            "popups": {
+              "$id": "#/properties/contentSecurity/sandbox/popups",
+              "title": "Allow popups",
+              "description": "Allow the CloudApp to open popups (such as window.open(), target=\"_blank\", or showModalDialog()). If this keyword is not used, the popup will silently fail to open",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
