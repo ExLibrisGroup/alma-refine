@@ -1,16 +1,21 @@
 <p translate>Main.Intro</p>
 <div class="refine-options">
   <mat-radio-group aria-label="Select an option" [(ngModel)]="listType">
-    <mat-radio-button value="SET" translate>{{'Main.SelectSet' | translate}}</mat-radio-button>
-    <mat-radio-button value="DISPLAY" translate>{{'Main.DisplayedRecords' | translate}}</mat-radio-button>
+    <mat-radio-button value="SET">{{'Main.SelectSet' | translate}}</mat-radio-button>
+    <mat-radio-button value="DISPLAY" *ngIf="entities.length>0">{{'Main.DisplayedRecords' | translate}}</mat-radio-button>
+    <mat-radio-button value="SELECT" *ngIf="entities.length>0">{{'Main.SelectRecords' | translate}}</mat-radio-button>
   </mat-radio-group>
   <div *ngIf="listType=='DISPLAY'">
-    <mat-label class="displayed-ids" translate [translateParams]="{length: mmsIds.length}">Main.DisplayedIds</mat-label>
+    <mat-label class="displayed-ids" translate [translateParams]="{length: entities.length}">Main.DisplayedIds</mat-label>
   </div>
   <app-select-set #selectSet *ngIf="listType=='SET'"
     (setSelected)=onSetSelected($event)>
   </app-select-set>
-
+  <app-select-entities #selectEntities *ngIf="listType=='SELECT'"
+    (entitySelected)="onBibSelected($event)"
+    [entityList]="entities"
+    [selectedEntities]="mmsIds">
+  </app-select-entities>
   <mat-form-field class="select-refine-service-field">
     <mat-select placeholder="{{'Main.SelectService' | translate}}" (selectionChange)="onRefineServiceSelected($event)" [formControl]="serviceSelect" [compareWith]="compareRefineServices">
       <mat-option *ngFor="let service of refineServices | async" [value]="service">

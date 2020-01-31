@@ -12,6 +12,7 @@ import { MainComponent } from './main/main.component';
 import { RefineBibComponent } from './refine-bib/refine-bib.component';
 import { RefineTableComponent } from './refine-table/refine-table.component';
 import { SelectSetComponent } from './select-set/select-set.component';
+import { SelectEntitiesComponent } from './select-entities/select-entities.component';
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -26,7 +27,8 @@ export function getToastrModule() {
       MainComponent,
       RefineBibComponent,
       RefineTableComponent,
-      SelectSetComponent
+      SelectSetComponent,
+      SelectEntitiesComponent
    ],
    imports: [
       MaterialModule,
