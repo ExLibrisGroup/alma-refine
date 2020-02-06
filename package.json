@@ -6,7 +6,7 @@
     "start": "eca start"
   },
   "dependencies": {
-    "@exlibris/exl-cloudapp-base": "^0.1.11",
+    "@exlibris/exl-cloudapp-base": "^0.1.13",
     "js-crc": "^0.2.0"
   }
 }
