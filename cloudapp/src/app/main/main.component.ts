@@ -86,6 +86,7 @@ export class MainComponent implements OnInit, OnDestroy {
       params['setId'] = this.selectedSet.id
     } else {
       if (this.listType == ListType.DISPLAY) {
+        this.mmsIds.clear();
         this.entities.map(e=>e.id).forEach(this.mmsIds.add, this.mmsIds);
       }
       params['mmsIds'] = Array.from(this.mmsIds).join(',');
