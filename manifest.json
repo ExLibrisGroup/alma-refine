@@ -11,5 +11,10 @@
    "icon": {
       "type": "url",
       "value": "/assets/openrefine-logo.png"
-   }
+   },
+   "entities": [
+      "BIB_MMS",
+      "IEP",
+      "IEE"
+   ]
 }

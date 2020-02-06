@@ -3,8 +3,9 @@
 		"BeginRefining": "Begin Refining",
 		"DisplayedIds": "Refine the {{length}} records on this page",
 		"DisplayedRecords": "Displayed Records",
+		"SelectRecords": "Select Records",
 		"Intro": "To begin refining records, navigate to a list of Bibliographic records or select a set.",
-		"SelectSet": "Select a set",
+		"SelectSet": "Set",
 		"SelectService": "Select a refine service"
 	},
 	"Refine": {

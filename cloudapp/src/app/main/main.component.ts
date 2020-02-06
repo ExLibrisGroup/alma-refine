@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { SelectSetComponent } from '../select-set/select-set.component';
 import { MatSelectChange } from '@angular/material';
 import { Router } from '@angular/router';
+import { SelectEntitiesComponent } from '../select-entities/select-entities.component';
 
 @Component({
   selector: 'app-main',
@@ -20,9 +21,11 @@ export class MainComponent implements OnInit, OnDestroy {
   refineServices: Observable<RefineServiceDef[]>;
   serviceSelect: FormControl;
   selectedSet: Set;
-  mmsIds: string[] = [];
+  mmsIds = new Set<string>();
+  entities: Entity[];
   listType: ListType = ListType.SET;
   @ViewChild('selectSet', {static: false}) selectSetComponent: SelectSetComponent;
+  @ViewChild('selectBibs', {static: false}) selectBibsComponent: SelectEntitiesComponent;
 
   constructor(
     private eventsService: CloudAppEventsService,
@@ -50,12 +53,11 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   onPageLoad = (pageInfo: PageInfo) => {
-    const entities = (pageInfo.entities||[]).filter(e=>['BIB_MMS', 'IEP', 'IEE'].includes(e.type));
-    if (entities.length > 0) {
-      this.listType = ListType.DISPLAY;
-      this.mmsIds = entities.map(e=>e.id); 
-    } else {
+    this.entities = (pageInfo.entities||[]).filter(e=>['BIB_MMS', 'IEP', 'IEE'].includes(e.type));
+    if (this.entities.length == 0) {
       this.listType = ListType.SET;
+    } else if (this.listType == ListType.SET) {
+      this.listType = ListType.DISPLAY;
     }
   }
 
@@ -83,13 +85,23 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.listType == ListType.SET) {
       params['setId'] = this.selectedSet.id
     } else {
-      params['mmsIds'] = this.mmsIds.join(',');
+      if (this.listType == ListType.DISPLAY) {
+        this.mmsIds.clear();
+        this.entities.map(e=>e.id).forEach(this.mmsIds.add, this.mmsIds);
+      }
+      params['mmsIds'] = Array.from(this.mmsIds).join(',');
     }
     this.router.navigate(['refine', params]);
+  }
+
+  onBibSelected(event) {
+    if (event.checked) this.mmsIds.add(event.mmsId);
+    else this.mmsIds.delete(event.mmsId);
   }
 }
 
 export enum ListType {
   SET = 'SET',
-  DISPLAY = 'DISPLAY'
+  DISPLAY = 'DISPLAY',
+  SELECT = 'SELECT'
 }
