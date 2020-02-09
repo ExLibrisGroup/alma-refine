@@ -1,21 +1,19 @@
 <div class="refine-options">
   <a [routerLink]="['']"><button mat-raised-button><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button></a>
   <div class="refine-action-buttons">
-    <!--<button mat-raised-button [disabled]="recordCount == 0">Clear</button>-->
-    <button mat-raised-button (click)="save()" color="primary" [disabled]="recordCount == 0">{{'Refine.Save' | translate}}</button>
+    <button mat-raised-button (click)="save()" color="primary" [disabled]="status.recordCount == 0">{{'Refine.Save' | translate}}</button>
   </div>
 </div>
 
 <div class="mat-elevation-z8 refine-table-container">
-  <div class="loading-shade"
-        *ngIf="isLoading">
-        <mat-progress-bar
-          class="refine-progress-bar"
-          [mode]="percentComplete >= 0 ? 'buffer' : 'indeterminate'"
-          [value]="percentComplete"
-          >
-      </mat-progress-bar>
-  </div> 
+  <div class="loading-shade" *ngIf="status.isLoading">
+    <mat-progress-spinner 
+      [mode]="status.percentComplete >=0 ? 'determinate' : 'indeterminate'"
+      [value]="status.percentComplete"
+      >
+    </mat-progress-spinner>
+    <div class="loading-percent" *ngIf="status.percentComplete>=0">{{status.percentComplete}}%</div>
+  </div>
 
   <mat-table [dataSource]="dataSource" class="full-width-table">
     <!-- Id Column -->
@@ -43,5 +41,5 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let bib; columns: displayedColumns;"></mat-row>
   </mat-table>
-  <mat-paginator [length]="recordCount" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+  <mat-paginator [length]="status.recordCount" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
 </div>

@@ -117,6 +117,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
             console.log('Created ' + data.map(b=>b.mms_id).join(', '));
           });        
       });
+      await new Promise(r => setTimeout(r, 750));
     }
     this.statusSubject.next(this.setStatus({isLoading: false, percentComplete: -1}));
     return mmsIds;

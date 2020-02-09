@@ -4,7 +4,7 @@ import { Bib } from '../models/bib';
 import { BibsService } from '../services/bibs.service';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
-import { RefineTableDataSource } from './refine-table-datasource';
+import { RefineTableDataSource, RefineDataSourceStatus } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
 import { ActivatedRoute, Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -21,9 +21,7 @@ export class RefineTableComponent implements OnInit {
   setId: string;
   mmsIds: string[];
   previewSize: { height: number, width: number } | {};
-  recordCount: number;
-  isLoading: boolean;
-  percentComplete: number;
+  status: RefineDataSourceStatus;
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
@@ -39,7 +37,7 @@ export class RefineTableComponent implements OnInit {
   ngOnInit() {
     /* Subscribe to datasource observables */
     this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
-    this.dataSource.status$.subscribe(result => ({isLoading: this.isLoading, recordCount: this.recordCount, percentComplete: this.percentComplete} = result))
+    this.dataSource.status$.subscribe(status => this.status = status)
 
     this.setId = this.route.snapshot.params['setId'];
     if (this.route.snapshot.params['mmsIds'])

@@ -31,10 +31,6 @@ mat-column-title, mat-column-id {
   vertical-align: top;
 }
 
-.refine-progress-bar {
-  width: 50%;
-}
-
 .refine-options button {
   margin-right: 8px;
   height: 45px;
@@ -51,4 +47,13 @@ div.refine-action-buttons {
 
 app-refine-bib {
   width: 100%;
+}
+
+.loading-percent {
+  position:relative; 
+  left: -75px;
+  color: blue;
+  font-size: 20px;
+  min-width: 48px;
+  text-align: center;
 }
