@@ -12,6 +12,7 @@ mat-column-title, mat-column-id {
 
 .refine-table-container {
   margin-bottom: 30px;
+  //display: flex;
 }
 
 .loading-shade {
@@ -49,11 +50,11 @@ app-refine-bib {
   width: 100%;
 }
 
-.loading-percent {
-  position:relative; 
-  left: -75px;
-  color: blue;
-  font-size: 20px;
-  min-width: 48px;
-  text-align: center;
+.mat-column-id {
+  flex: 0 0 150px;
 }
+
+.mat-column-refine {
+  flex: 0 0 50%;
+}
+

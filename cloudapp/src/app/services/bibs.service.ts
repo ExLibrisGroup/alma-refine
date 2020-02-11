@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Bibs, Bib } from '../models/bib';
 import { SetMembers } from '../models/set';
 import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
@@ -18,7 +18,7 @@ export class BibsService {
     return this.restService.call( {
       url: '/bibs',
       queryParams: params
-    }).pipe(map( results => results as Bibs ))
+    }).pipe(map( results => results as Bibs ), catchError(err=>of({total_record_count: 0, bib: []})))
   }
 
   /** Retrieve MMS_IDs from set of BIBs */
@@ -34,7 +34,7 @@ export class BibsService {
   }
 
   /** Create a new BIB record with the specified MARCXML */
-  createBib( bib: Bib ) {
+  createBib( bib: Bib ): Observable<Bib> {
     return this.restService.call( {
       url: '/bibs',
       headers: { 
@@ -46,7 +46,7 @@ export class BibsService {
   }
   
   /** Update a BIB record with the specified MARCXML */
-  updateBib( bib: Bib ) {
+  updateBib( bib: Bib ): Observable<Bib> {
     return this.restService.call( {
       url: `/bibs/${bib.mms_id}`,
       headers: { 
@@ -59,7 +59,7 @@ export class BibsService {
 
   /** Retrieve a single BIB record */
   getBib (mmsId: string): Observable<Bib> {
-    return this.restService.call(`/almaws/v1/bibs/${mmsId}`)
+    return this.restService.call(`/bibs/${mmsId}`)
       .pipe(map( results => results as Bib ));
   }   
 

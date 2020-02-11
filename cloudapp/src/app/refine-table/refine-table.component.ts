@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Bib } from '../models/bib';
 import { BibsService } from '../services/bibs.service';
-import { tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
-import { RefineTableDataSource, RefineDataSourceStatus } from './refine-table-datasource';
+import { RefineTableDataSource } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
 import { ActivatedRoute, Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -21,7 +20,7 @@ export class RefineTableComponent implements OnInit {
   setId: string;
   mmsIds: string[];
   previewSize: { height: number, width: number } | {};
-  status: RefineDataSourceStatus;
+  status = { isLoading: false, recordCount: 0, percentComplete: -1 };
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
@@ -35,28 +34,27 @@ export class RefineTableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    /* Subscribe to datasource observables */
-    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService);
-    this.dataSource.status$.subscribe(status => this.status = status)
-
     this.setId = this.route.snapshot.params['setId'];
     if (this.route.snapshot.params['mmsIds'])
       this.mmsIds = this.route.snapshot.params['mmsIds'].split(',');
+    this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService,
+      this.mmsIds, this.setId);
     this.setPreviewSize();
   }
 
   ngAfterViewInit() {
-    this.paginator.page
-      .pipe(
-        tap(() => this.dataSource.loadBibs(
-          { 
-            pageIndex: this.paginator.pageIndex, 
-            pageSize: this.paginator.pageSize
-          })
-        )
-      ).subscribe();
     /* Avoid ExpressionChangedAfterItHasBeenCheckedError error */
-    setTimeout( () => this.dataSource.loadBibs({ mmsIds: this.mmsIds, setId: this.setId, pageSize: this.paginator.pageSize }));
+    setTimeout(()=>this.page());
+  }
+
+  page() {
+    this.status.isLoading = true;
+    this.dataSource.loadBibs({ pageSize: this.paginator.pageSize, pageIndex: this.paginator.pageIndex })
+      .subscribe({ complete: () => this.status.isLoading = false });
+  }
+
+  get totalRecords() {
+    return this.dataSource.recordCount;
   }
 
   setPreviewSize() {
@@ -65,10 +63,24 @@ export class RefineTableComponent implements OnInit {
       Utils.pick(['height', 'width'])(serviceDetails.preview) : { height: 200, width: 350 };
   }
 
-  async save() {
-    let mmsIds = await this.dataSource.saveRefinements();
-    this.toastr.success(`Successfully updated ${mmsIds.length} records.`);
-    this.router.navigate(['']);
+  save() {
+    let mmsIds = [];
+    this.status = { isLoading: true, recordCount: Object.keys(this.dataSource.updates).length, percentComplete: 0 };
+    this.dataSource.saveRefinements().subscribe( {
+      next: resp => {
+        mmsIds.push(resp);
+        this.status.percentComplete = (mmsIds.length/this.status.recordCount)*100
+      },
+      complete: () => {
+        console.log('Created', mmsIds.join(','));
+        setTimeout(() => {
+          this.status = { isLoading: false, percentComplete: -1, recordCount: 0 };
+          this.toastr.success(`Successfully updated ${mmsIds.length} records.`);
+          this.router.navigate(['']);  
+        }, 1000)
+
+      }
+    })
   }
 
   compareBib(a: Bib, b: Bib): boolean {

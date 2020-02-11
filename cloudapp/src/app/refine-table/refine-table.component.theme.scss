@@ -1,0 +1,10 @@
+@mixin refine-table-component-theme ($theme, $typgraphy) {
+  .loading-percent {
+    position:relative; 
+    left: -75px;
+    color: mat-color(map-get($theme, primary));
+    font-size: 20px;
+    min-width: 48px;
+    text-align: center;
+  }  
+}

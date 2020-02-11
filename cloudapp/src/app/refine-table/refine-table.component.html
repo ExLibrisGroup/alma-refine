@@ -1,7 +1,7 @@
 <div class="refine-options">
   <a [routerLink]="['']"><button mat-raised-button><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button></a>
   <div class="refine-action-buttons">
-    <button mat-raised-button (click)="save()" color="primary" [disabled]="status.recordCount == 0">{{'Refine.Save' | translate}}</button>
+    <button mat-raised-button (click)="save()" color="primary" [disabled]="totalRecords== 0">{{'Refine.Save' | translate}}</button>
   </div>
 </div>
 
@@ -41,5 +41,5 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let bib; columns: displayedColumns;"></mat-row>
   </mat-table>
-  <mat-paginator [length]="status.recordCount" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+  <mat-paginator [length]="totalRecords" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" (page)="page()"></mat-paginator>
 </div>

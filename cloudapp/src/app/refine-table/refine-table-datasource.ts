@@ -1,12 +1,14 @@
 import { CollectionViewer, DataSource } from "@angular/cdk/collections";
-import { Bib, Bibs, Refinements, RefineField } from '../models/bib';
-import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
+import { Bib, Refinements, RefineField } from '../models/bib';
+import { BehaviorSubject, Observable, of, from, iif } from 'rxjs';
 import { BibsService } from '../services/bibs.service';
-import { catchError, finalize } from 'rxjs/operators';
+import { mergeMap, map, tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
 import { RefineServiceField } from '../models/refine-service';
+
+const MAX_PARALLEL_CALLS = 5;
 
 export class RefineTableDataSource implements DataSource<Bib> {
 
@@ -18,12 +20,14 @@ export class RefineTableDataSource implements DataSource<Bib> {
   private refinements: Refinements = <Refinements>{};
   private refinementsSubject = new BehaviorSubject<Refinements>(this.refinements);
   public  refinements$ = this.refinementsSubject.asObservable();
-  private status: RefineDataSourceStatus = { isLoading: false, recordCount: 0, percentComplete: -1 };
-  private statusSubject = new BehaviorSubject<RefineDataSourceStatus>(this.status);
-  public  status$ = this.statusSubject.asObservable();
+  public  recordCount: number;
 
   constructor(private bibsService: BibsService, private configService: ConfigService,
-    private refineService: RefineService, private isApplyRefinementsToAllValues = true) {}
+    private refineService: RefineService, private mmsIds = [], private setId = null, 
+    private shouldApplyRefinementsToAllValues = true) {
+      this._setId = setId;
+      this._mmsIds = mmsIds;
+    }
 
   connect(collectionViewer: CollectionViewer): Observable<Bib[]> {
     return this.bibsSubject.asObservable();
@@ -32,41 +36,34 @@ export class RefineTableDataSource implements DataSource<Bib> {
   disconnect(collectionViewer: CollectionViewer): void {
     this.bibsSubject.complete();
     this.refinementsSubject.complete();
-    this.statusSubject.complete();
   }
 
-  async loadBibs( { setId = this._setId, mmsIds = this._mmsIds, pageIndex = 0, pageSize = 10 } = {} ) {
-    if (setId) this._setId = setId;
-    else if (mmsIds) this._mmsIds = mmsIds;
-    this.statusSubject.next(this.setStatus({isLoading: true}));
-    let mmsIdsToLoad: string[];
-    let recordCount: number;
-    if (this._setId) {
-      const members = await this.bibsService.getMmsIdsFromSet(setId, pageIndex, pageSize).toPromise();
-      mmsIdsToLoad = members.member.map(m=>m.id);
-      recordCount = members.total_record_count;
-    } else if (this._mmsIds) {
-      mmsIdsToLoad = this._mmsIds.slice(pageSize*pageIndex, pageSize*(pageIndex+1));
-      recordCount = this._mmsIds.length;
-    } 
-    this.statusSubject.next(this.setStatus({recordCount: recordCount}));
-    this.bibsService.getBibs(mmsIdsToLoad)
-      .pipe(
-        catchError(() => of (<Bibs>{})), 
-        finalize(()=>this.statusSubject.next(this.setStatus({isLoading: false})))
+  loadBibs( { pageIndex = 0, pageSize = 10 } = {} ) {
+    return iif(() => this._setId != null,  
+      this.bibsService.getMmsIdsFromSet(this.setId, pageIndex, pageSize)
+        .pipe(
+          tap(members=>this.recordCount = members.total_record_count),
+          map(members=>members.member ? members.member.map(m=>m.id) : [])
+        ),
+      of(this._mmsIds.slice(pageSize*pageIndex, pageSize*(pageIndex+1)))
+        .pipe(
+          tap(() =>this.recordCount = this._mmsIds.length)
+        )
+      ).pipe(
+        mergeMap(mmsIds => this.bibsService.getBibs(mmsIds)),
+        tap(bibs => {
+          this.loadRefinements(bibs.bib);
+          this.bibsSubject.next(bibs.bib);
+        })
       )
-      .subscribe(bibs=>{ 
-        this.loadRefinements(bibs.bib); 
-        this.bibsSubject.next(bibs.bib);
-      });
   }
 
-  async loadRefinements( bibs: Bib[] ) {
+  loadRefinements( bibs: Bib[] ) {
     bibs.forEach(bib=>this.refinements[bib.mms_id]=this.refinements[bib.mms_id] || this.extractRefineFields(bib.anies, this.configService.selectedRefineService.fields));
     let refinements = Utils.pick(bibs.map(b=>b.mms_id))(this.refinements);
     this.applyRefinementsToAllValues(refinements);
     this.refinementsSubject.next(refinements);
-    refinements = await this.refineService.callRefineService(refinements, this.configService.selectedRefineService);
+    this.refineService.callRefineService(refinements, this.configService.selectedRefineService).subscribe(data=>refinements=data);
   }
 
   compareField(field1: RefineField, field2: RefineField) {
@@ -79,7 +76,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
    * @param field - The field to check in the target. Specified when a refinement is selected. Default is to check all refined fields.
    */
   applyRefinementsToAllValues(target: Refinements, field: RefineField = null) {
-    if (this.isApplyRefinementsToAllValues) {
+    if (this.shouldApplyRefinementsToAllValues) {
       Object.values(target).forEach(b=>b.forEach(f=>{
         if (field) {
           if (this.compareField(field, f))
@@ -98,55 +95,41 @@ export class RefineTableDataSource implements DataSource<Bib> {
     this.applyRefinementsToAllValues(this.refinements, field);
   }
 
-  async saveRefinements(): Promise<Array<string>> {
-    this.statusSubject.next(this.setStatus({percentComplete: 0, isLoading: true}))
-    /* Filter refinements for those which have 1 or more refined fields */
-    let updates = Utils.filter(Utils.combine(Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
-    let mmsIds: Array<string> = [];
-    let complete = 0;
-    if (Object.keys(updates).length > 0) {
-      /* Chunk into 10 updates at at time */
-      await Utils.asyncForEach(Utils.chunk(Object.keys(updates), 10), async (batch) => {
-        let bibs = await this.bibsService.getBibs(batch).toPromise();
-        let applied = bibs.bib.map(bib => this.applyRefinements(bib, updates[bib.mms_id]));
-        await Promise.all(applied.map(bib => this.bibsService.createBib(bib).toPromise()))
-          .then(data=> { 
-            complete += data.length; 
-            this.statusSubject.next(this.setStatus({percentComplete: (complete/Object.keys(updates).length)*100}));
-            mmsIds.push(...data.map(b=>b.mms_id));
-            console.log('Created ' + data.map(b=>b.mms_id).join(', '));
-          });        
-      });
-      await new Promise(r => setTimeout(r, 750));
-    }
-    this.statusSubject.next(this.setStatus({isLoading: false, percentComplete: -1}));
-    return mmsIds;
+  /** Return refinements for those which have 1 or more refined fields */
+  get updates() {
+    return Utils.filter(Utils.combine(Object.entries(this.refinements).map(([k, v]) => ({[k]: v.filter(b=>b.selectedRefineOption)}))) as Refinements, update => update.length > 0);
   }
 
-  private setStatus(options: { isLoading?: boolean, percentComplete?: number, recordCount?: number}): RefineDataSourceStatus {
-    Object.entries(options).forEach(([key, value]) => this.status[key] = value);
-    return this.status;
+  saveRefinements() {
+    return from(Object.entries(this.updates))
+      .pipe(
+        mergeMap(([mmsId, fields]) => this.applyRefinements(mmsId, fields), MAX_PARALLEL_CALLS),
+        mergeMap(bib=>this.bibsService.createBib(bib), MAX_PARALLEL_CALLS),
+        map(bib=>bib.mms_id)
+      )
   }
 
-  private applyRefinements( bib: Bib, refinements: RefineField[]): Bib {
-    const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
-    refinements.forEach(field=>{
-      let datafield = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`, { single: true }).singleNodeValue;
-      if (datafield) {
-        if (field.selectedRefineOption) {
-          datafield.textContent=field.selectedRefineOption.value;
-          /* Add subfield 0 if not exists */
-          let uri = Utils.select(doc, 'subfield[@code="0"]', { context: datafield.parentNode, single: true }).singleNodeValue;
-          if (uri) {
-            uri.textContent = field.selectedRefineOption.uri
-          } else {
-            Utils.dom("subfield", { parent: datafield.parentNode, text: field.selectedRefineOption.uri, attributes: [ ["code", "0"] ]});
+  private applyRefinements( mmsId: string, refinements: RefineField[]): Observable<Bib> {
+    return this.bibsService.getBib(mmsId).pipe( map( bib => {
+      const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
+      refinements.forEach(field=>{
+        let datafield = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`, { single: true }).singleNodeValue;
+        if (datafield) {
+          if (field.selectedRefineOption) {
+            datafield.textContent=field.selectedRefineOption.value;
+            /* Add subfield 0 if not exists */
+            let uri = Utils.select(doc, 'subfield[@code="0"]', { context: datafield.parentNode, single: true }).singleNodeValue;
+            if (uri) {
+              uri.textContent = field.selectedRefineOption.uri
+            } else {
+              Utils.dom("subfield", { parent: datafield.parentNode, text: field.selectedRefineOption.uri, attributes: [ ["code", "0"] ]});
+            }
           }
         }
-      }
-    }) 
-    bib.anies = new XMLSerializer().serializeToString(doc.documentElement);
-    return bib;
+      }) 
+      bib.anies = new XMLSerializer().serializeToString(doc.documentElement);
+      return bib;
+    }))
   }
 
   private extractRefineFields( marcxml: any, fields: (string|RefineServiceField)[]): RefineField[] {
@@ -184,10 +167,4 @@ export class RefineTableDataSource implements DataSource<Bib> {
     return refineFields;
   }
 
-}
-
-export interface RefineDataSourceStatus {
-  isLoading: boolean;
-  recordCount: number;
-  percentComplete: number;
 }
