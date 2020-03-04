@@ -2,7 +2,8 @@
    "$schema": "./manifest.schema.json",
    "id": "alma-refine",
    "title": "Alma Refine",
-   "description": "Refine Alma BIB records using OpenRefine services",
+   "subtitle": "Refine Alma BIB records using OpenRefine services",
+   "description": "This app can be used to refine bibliographic records with services that adhere to the OpenRefine standard. References to the Getty vocabularies, WikiData, and GeoNames are included with the app.",
    "author": "Josh Weisman",
    "fullscreen": {
       "allow": true,
@@ -16,5 +17,12 @@
       "BIB_MMS",
       "IEP",
       "IEE"
-   ]
+   ],
+   "contentSecurity": {
+      "connectSrc": [
+         "https://services.getty.edu/vocab/reconcile/",
+         "https://tools.wmflabs.org/openrefine-wikidata/en/api",
+         "https://geonames-openrefine.herokuapp.com/reconcile"
+      ]
+   }
 }

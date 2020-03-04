@@ -1,6 +1,6 @@
 import { Subscription, Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { CloudAppEventsService, Entity, PageInfo } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, Entity, PageInfo, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { RefineServiceDef } from '../models/refine-service';
 import { ConfigService } from '../services/config.service';
 import { Set } from '../models/set';
@@ -53,7 +53,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   onPageLoad = (pageInfo: PageInfo) => {
-    this.entities = (pageInfo.entities||[]).filter(e=>['BIB_MMS', 'IEP', 'IEE'].includes(e.type));
+    this.entities = (pageInfo.entities||[]).filter(e=>[EntityType.BIB_MMS, EntityType.IEE, EntityType.IEP].includes(e.type));
     if (this.entities.length == 0) {
       this.listType = ListType.SET;
     } else if (this.listType == ListType.SET) {
