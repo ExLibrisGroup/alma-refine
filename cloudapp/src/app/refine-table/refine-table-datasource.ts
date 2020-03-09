@@ -104,7 +104,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
     return from(Object.entries(this.updates))
       .pipe(
         mergeMap(([mmsId, fields]) => this.applyRefinements(mmsId, fields), MAX_PARALLEL_CALLS),
-        mergeMap(bib=>this.bibsService.createBib(bib), MAX_PARALLEL_CALLS),
+        mergeMap(bib=>this.bibsService.updateBib(bib), MAX_PARALLEL_CALLS),
         map(bib=>bib.mms_id)
       )
   }

@@ -21,6 +21,7 @@ export class RefineBibComponent  {
 
   showPreview(event: MouseEvent, url: string) { 
     setTimeout(()=>{ 
+      this.hidePreview();
       const parent = (<Element>event.target).closest(".mat-select-panel");
       let iframe = Utils.dom('iframe', {
         parent: parent,
@@ -29,7 +30,7 @@ export class RefineBibComponent  {
           [ 'src', url ], ['frameBorder', '0' ],
           [ 'height', this.previewSize.height || '200' ],
           [ 'width', this.previewSize.width || '350' ],
-          [ 'scrolling', 'no' ]
+          [ 'scrolling', 'auto' ]
         ]
       });
       if (parent) parent.parentNode.insertBefore(iframe, parent.nextSibling);

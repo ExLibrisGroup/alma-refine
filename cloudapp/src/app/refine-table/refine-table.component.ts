@@ -72,7 +72,7 @@ export class RefineTableComponent implements OnInit {
         this.status.percentComplete = (mmsIds.length/this.status.recordCount)*100
       },
       complete: () => {
-        console.log('Created', mmsIds.join(','));
+        console.log('Updated', mmsIds.join(','));
         setTimeout(() => {
           this.status = { isLoading: false, percentComplete: -1, recordCount: 0 };
           this.toastr.success(`Successfully updated ${mmsIds.length} records.`);
