@@ -53,7 +53,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   onPageLoad = (pageInfo: PageInfo) => {
-    this.entities = (pageInfo.entities||[]).filter(e=>[EntityType.BIB_MMS, EntityType.IEE, EntityType.IEP].includes(e.type));
+    this.entities = (pageInfo.entities||[]).filter(e=>[EntityType.BIB_MMS, 'BIB', 'IEP'].includes(e.type));
     if (this.entities.length == 0) {
       this.listType = ListType.SET;
     } else if (this.listType == ListType.SET) {
