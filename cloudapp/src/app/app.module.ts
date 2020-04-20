@@ -13,6 +13,8 @@ import { RefineBibComponent } from './refine-bib/refine-bib.component';
 import { RefineTableComponent } from './refine-table/refine-table.component';
 import { SelectSetComponent } from './select-set/select-set.component';
 import { SelectEntitiesComponent } from './select-entities/select-entities.component';
+import { SettingsComponent } from './settings/settings.component';
+import { ServiceDefComponent } from './settings/service-def/service-def.component'
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -28,7 +30,9 @@ export function getToastrModule() {
       RefineBibComponent,
       RefineTableComponent,
       SelectSetComponent,
-      SelectEntitiesComponent
+      SelectEntitiesComponent,
+      SettingsComponent,
+      ServiceDefComponent
    ],
    imports: [
       MaterialModule,

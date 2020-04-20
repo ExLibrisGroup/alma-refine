@@ -1,0 +1,32 @@
+<div class="title">
+  <h1 translate>Settings.Title</h1>
+  <a [routerLink]="['']">
+    <button mat-raised-button>
+      <mat-icon>arrow_back</mat-icon>
+      {{'Settings.Back' | translate}}
+    </button>
+  </a>
+</div>
+
+<form [formGroup]="form" *ngIf="form">
+
+  <h2 translate>Settings.General</h2>
+  <section class="settings-section">
+    <mat-checkbox labelPosition="after" formControlName="applyRefinementsToAllValues">{{'Settings.Apply' | translate}}</mat-checkbox>
+  </section>
+
+  <h2 translate>Settings.RefineServices</h2>
+  <mat-accordion>
+    <app-settings-service-def *ngFor="let service of services.controls" [form]="service">
+    </app-settings-service-def>
+  </mat-accordion>
+
+  <div class="commands-container">
+    <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty">{{ 'Settings.Save' | translate }}</button>
+    <button mat-stroked-button type="button" (click)="reset()" [disabled]="!form.dirty">{{ 'Settings.Reset' | translate }}</button> 
+    <button mat-flat-button (click)="restore()">{{ 'Settings.RestoreDefault' | translate}}</button>
+    <mat-spinner diameter="30" class="spinner" *ngIf="saving"></mat-spinner>
+  </div>
+</form>
+
+

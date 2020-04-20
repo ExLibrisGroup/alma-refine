@@ -1,6 +1,7 @@
 {
-  "name": "my-exl-cloudapp",
-  "version": "1.0.0",
+  "name": "alma-refine",
+  "description": "Cloud App implementing some of the OpenRefine standard",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "eca start"

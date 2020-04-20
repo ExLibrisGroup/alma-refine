@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Sets } from '../models/set';
-import { Observable, of, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { RefineServiceDef } from '../models/refine-service';
-import { CloudAppRestService, Request } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppRestService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { Settings } from '../models/settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
   private _selectedRefineService: RefineServiceDef;
+  private _settings: Settings;
 
-  constructor( private httpClient: HttpClient,
-    private restService: CloudAppRestService 
+  constructor( 
+    private httpClient: HttpClient,
+    private restService: CloudAppRestService,
+    private settingsService: CloudAppSettingsService
   ) {  }
 
   searchSets(name: string = null, type: string = 'BIB_MMS'): Observable<Sets> {
@@ -25,9 +29,18 @@ export class ConfigService {
     }).pipe(map( results => results as Sets))
   }
 
-  /** Retrieve refine services from config file */
-  getRefineServices(): Observable<RefineServiceDef[]> {
-    return this.httpClient.get('./assets/refineServices.json') as Observable<RefineServiceDef[]>;
+  /** Retrieve settings  */
+  getSettings(): Observable<Settings> {
+    if (this._settings) {
+      return of(this._settings);
+    } else {
+      return this.settingsService.get()
+        .pipe(tap(settings=>this._settings=settings));
+    }
+  }
+
+  setSettings(val: Settings) {
+    this._settings = val;
   }
 
   get selectedRefineService(): RefineServiceDef {

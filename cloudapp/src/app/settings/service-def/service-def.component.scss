@@ -1,0 +1,45 @@
+mat-form-field.full-width {
+  width: 100%;
+}
+
+mat-form-field.full-width:last-of-type {
+  margin-bottom: 25px;
+}
+
+mat-card {
+  margin-bottom: 20px;
+}
+
+.url-origin {
+  display: block;
+  margin-bottom: 5px;
+  color: darkgrey;
+}
+
+.field-tag {
+  width: 15%;
+}
+
+.field-subfield {
+  width: 15%;
+}
+
+.field-indexes {
+  width: 35%;
+}
+
+.field-subfield2 {
+  width: 35%
+}
+
+div.field-header {
+  display: flex;
+  margin: 5px 0;
+  font-size: x-small;
+}
+
+div.field-header mat-icon {
+  margin-left: auto;
+  font-size: small;
+  cursor: pointer;
+}

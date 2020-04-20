@@ -8,6 +8,10 @@
       "allow": true,
       "open": false
    },
+   "pages": {
+      "settings": "/#/settings",
+      "help": "https://github.com/jweisman/alma-refine/wiki/Help"
+   },
    "icon": {
       "type": "url",
       "value": "/assets/openrefine-logo.png"
@@ -19,9 +23,17 @@
    ],
    "contentSecurity": {
       "connectSrc": [
-         "https://services.getty.edu/vocab/reconcile/",
-         "https://tools.wmflabs.org/openrefine-wikidata/en/api",
-         "https://geonames-openrefine.herokuapp.com/reconcile"
-      ]
+         "https://services.getty.edu/",
+         "https://tools.wmflabs.org/",
+         "https://geonames-openrefine.herokuapp.com/"
+      ],
+      "frameSrc": [
+         "https://services.getty.edu/",
+         "https://tools.wmflabs.org/",
+         "https://geonames-openrefine.herokuapp.com/"
+      ],
+      "sandbox": {
+         "modals": true
+      }
    }
 }

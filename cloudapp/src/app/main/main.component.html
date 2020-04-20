@@ -18,7 +18,7 @@
   </app-select-entities>
   <mat-form-field class="select-refine-service-field">
     <mat-select placeholder="{{'Main.SelectService' | translate}}" (selectionChange)="onRefineServiceSelected($event)" [formControl]="serviceSelect" [compareWith]="compareRefineServices">
-      <mat-option *ngFor="let service of refineServices | async" [value]="service">
+      <mat-option *ngFor="let service of refineServices" [value]="service">
         {{ service.name }}
       </mat-option>
     </mat-select>

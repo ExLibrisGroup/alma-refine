@@ -3,14 +3,15 @@ export interface RefineServiceDef {
   description: string,
   url: string,
   prefix?: string,
-  fields: (string|RefineServiceField)[],
-  serviceDetails: any
+  fields: RefineServiceField[],
+  serviceDetails?: any
 }
 
-export interface RefineServiceField {
-  field: string, 
-  subfield2?: string | string[],
-  indexes: string | string[]
+export class RefineServiceField {
+  tag: string = "";
+  subfield: string = "a";
+  subfield2: string[] = [];
+  indexes: string[] = [];
 }
 
 export interface RefineQuery {

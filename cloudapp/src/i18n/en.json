@@ -21,5 +21,41 @@
 	},
 	"SetSelect": {
 		"SelectSet": "Select a set"
+	},
+	"Settings": {
+		"Title": "Settings",
+		"Back": "Back",
+		"General": "General",
+		"Apply": "Apply refinements to all similar values",
+		"RefineServices": "Refine Services",
+		"Fields": "Fields",
+		"Save": "Save",
+		"Reset": "Reset",
+		"Discard": "Discard unsaved changes?",
+		"Saved": "Settings successfully saved",
+		"RestoreDefault": "Restore default",
+		"RestoreConfirm": "Restore default settings and lose all local configuration?",
+		"ServiceDef": {
+			"Name": "Name",
+			"Description": "Description",
+			"ServiceURL": "Service URL",
+			"Prefix": "Prefix",
+			"PrefixHint": "Optional URI prefix for $0",
+			"Fields": "Fields",
+			"FieldHeader": "Field #{{index}}",
+			"Tag": "Tag",
+			"Subfield": "Subfield",
+			"Indexes": "Indexes",
+			"Subfield2": "Subfield 2",
+			"AddSubfield2": "Add...",
+			"AddField": "Add field",
+			"RemoveField": "Remove field?",
+			"Errors": {
+				"Name": "Name is required",
+				"Tag": "Invalid field",
+				"Subfield": "Invalid subfield"
+			}
+
+		}
 	}
 }

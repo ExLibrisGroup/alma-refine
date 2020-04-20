@@ -1,4 +1,4 @@
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CloudAppEventsService, Entity, PageInfo, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { RefineServiceDef } from '../models/refine-service';
@@ -18,7 +18,7 @@ import { SelectEntitiesComponent } from '../select-entities/select-entities.comp
 export class MainComponent implements OnInit, OnDestroy {
 
   private pageLoad$: Subscription;
-  refineServices: Observable<RefineServiceDef[]>;
+  refineServices: RefineServiceDef[];
   serviceSelect: FormControl;
   selectedSet: Set;
   mmsIds = new Set<string>();
@@ -35,21 +35,12 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.serviceSelect = new FormControl(this.configService.selectedRefineService);
-    this.refineServices = this.configService.getRefineServices();
-    this.eventsService.getPageMetadata().subscribe(this.onPageLoad);
+    this.configService.getSettings().subscribe(settings=>this.refineServices=settings.refineServices);
     this.pageLoad$ = this.eventsService.onPageLoad(this.onPageLoad);
   }
 
   ngOnDestroy(): void {
     this.pageLoad$.unsubscribe();
-  }
-
-  setInitialRefineService() {
-    this.refineServices
-      .subscribe((data) => {
-        this.serviceSelect.setValue(data[0]);
-        this.configService.selectedRefineService = data[0];
-      })
   }
 
   onPageLoad = (pageInfo: PageInfo) => {
@@ -66,7 +57,6 @@ export class MainComponent implements OnInit, OnDestroy {
     this.selectSetComponent.formControl.reset();
     this.configService.selectedRefineService = null;
   }
-
 
   compareRefineServices(a: RefineServiceDef, b: RefineServiceDef): boolean {
     return a && b ? a.url === b.url : a === b;

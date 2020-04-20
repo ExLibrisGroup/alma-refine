@@ -14,6 +14,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
 
   private _setId: string;
   private _mmsIds: string[];
+  private shouldApplyRefinementsToAllValues: boolean;
 
   /* Subjects and Observables */
   private bibsSubject = new BehaviorSubject<Bib[]>([]);
@@ -22,11 +23,16 @@ export class RefineTableDataSource implements DataSource<Bib> {
   public  refinements$ = this.refinementsSubject.asObservable();
   public  recordCount: number;
 
-  constructor(private bibsService: BibsService, private configService: ConfigService,
-    private refineService: RefineService, private mmsIds = [], private setId = null, 
-    private shouldApplyRefinementsToAllValues = true) {
+  constructor(
+    private bibsService: BibsService, 
+    private configService: ConfigService,
+    private refineService: RefineService, 
+    private mmsIds = [], 
+    private setId = null) {
       this._setId = setId;
       this._mmsIds = mmsIds;
+      this.configService.getSettings()
+        .subscribe(settings=>this.shouldApplyRefinementsToAllValues=settings.applyRefinementsToAllValues)
     }
 
   connect(collectionViewer: CollectionViewer): Observable<Bib[]> {
@@ -132,34 +138,33 @@ export class RefineTableDataSource implements DataSource<Bib> {
     }))
   }
 
-  private extractRefineFields( marcxml: any, fields: (string|RefineServiceField)[]): RefineField[] {
+  private extractRefineFields( marcxml: any, fields: RefineServiceField[]): RefineField[] {
     const doc = new DOMParser().parseFromString(marcxml, "application/xml");
 
     let refineFields = new Array<RefineField>();
     
     fields.forEach(field=>{
-      let [tag, subfieldCode = 'a'] = ((typeof field === 'string') ? field : field.field).split('$');
       let xpath = [];
-      for (var i = 0; i < tag.length; i++) {
-        if (tag.charAt(i)!='x') {
-          xpath.push(`substring(@tag,${i+1},1)="${tag.charAt(i)}"`);
+      for (var i = 0; i < field.tag.length; i++) {
+        if (field.tag.charAt(i)!='x') {
+          xpath.push(`substring(@tag,${i+1},1)="${field.tag.charAt(i)}"`);
         }
       }
-      if (typeof field != 'string' && field.subfield2) 
-        xpath.push(`contains("${Array.isArray(field.subfield2) ? field.subfield2.join(' ') : field.subfield2}", subfield[@code="2"]) and string-length(subfield[@code="2"]) != 0`);
-      
-      let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
+      if (field.subfield2.length!=0)
+        xpath.push(`contains("${field.subfield2.join(' ')}", subfield[@code="2"]) and string-length(subfield[@code="2"]) != 0`);
+
+        let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {
-        let subfields = Utils.select(doc, `subfield[@code="${subfieldCode}"]`, {context: datafield});
+        let subfields = Utils.select(doc, `subfield[@code="${field.subfield}"]`, {context: datafield});
         let uri = Utils.select(doc, 'subfield[@code="0"]', {context: datafield, single: true});
         if(subfield=subfields.iterateNext() as Element) {
           refineFields.push({
             tag: datafield.getAttribute('tag'),
-            subfield: subfieldCode, 
+            subfield: field.subfield, 
             value: subfield.textContent,
             selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null,
-            indexes: (typeof field !== 'string') ? field.indexes : null
+            indexes: field.indexes
           })
         }
       };
