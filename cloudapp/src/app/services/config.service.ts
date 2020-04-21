@@ -35,7 +35,12 @@ export class ConfigService {
       return of(this._settings);
     } else {
       return this.settingsService.get()
-        .pipe(tap(settings=>this._settings=settings));
+        .pipe(
+          map(settings=>
+            (Object.keys(settings).length==0) ? new Settings() : settings
+          ),
+          tap(settings=>this._settings=settings)
+        );
     }
   }
 

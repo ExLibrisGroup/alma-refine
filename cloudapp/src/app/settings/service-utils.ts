@@ -6,7 +6,7 @@ export const fieldFormGroup = (field: RefineServiceField = null): FormGroup => {
   if (field == null) field = new RefineServiceField();
   return new FormGroup({
     tag: new FormControl(field.tag, Validators.pattern("^[0-9x]{3}$")),
-    subfield: new FormControl(field.subfield, Validators.pattern("^[a-z]{1}$")),
+    subfield: new FormControl(field.subfield, Validators.pattern("^[a-z0-9]{1}$")),
     indexes: new FormControl(field.indexes),
     subfield2: new FormControl(field.subfield2)
   });

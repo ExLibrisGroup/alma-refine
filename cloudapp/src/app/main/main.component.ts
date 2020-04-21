@@ -52,12 +52,6 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  clear() {
-    this.serviceSelect.reset();
-    this.selectSetComponent.formControl.reset();
-    this.configService.selectedRefineService = null;
-  }
-
   compareRefineServices(a: RefineServiceDef, b: RefineServiceDef): boolean {
     return a && b ? a.url === b.url : a === b;
   }
@@ -87,6 +81,16 @@ export class MainComponent implements OnInit, OnDestroy {
   onBibSelected(event) {
     if (event.checked) this.mmsIds.add(event.mmsId);
     else this.mmsIds.delete(event.mmsId);
+  }
+
+  get isValid() {
+    return (
+      ( (this.listType==ListType.SET && this.selectedSet!=null) ||
+        (this.listType==ListType.SELECT && this.mmsIds.size!=0) || 
+        (this.listType=='DISPLAY') 
+      ) &&
+      this.configService.selectedRefineService!=null
+    );
   }
 }
 

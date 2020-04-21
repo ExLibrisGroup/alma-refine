@@ -153,7 +153,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
       if (field.subfield2.length!=0)
         xpath.push(`contains("${field.subfield2.join(' ')}", subfield[@code="2"]) and string-length(subfield[@code="2"]) != 0`);
 
-        let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
+      let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {
         let subfields = Utils.select(doc, `subfield[@code="${field.subfield}"]`, {context: datafield});

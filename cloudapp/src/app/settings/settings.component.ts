@@ -38,8 +38,11 @@ export class SettingsComponent implements OnInit {
   save() {
     if (!this.form.valid) return;
     this.saving = true;
+    
     /* Update cached settings in the config service */
     this.configService.setSettings(this.form.value);
+    this.configService.selectedRefineService = null;
+
     this.settingsService.set(this.form.value).subscribe( () => {
       this.toastr.success(this.translate.instant('Settings.Saved'));
       this.form.markAsPristine();

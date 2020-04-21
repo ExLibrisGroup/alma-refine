@@ -44,7 +44,7 @@ export class ServiceDefComponent implements OnInit {
 
     if ((value || '').trim()) {
       field.value.push(value.trim());
-      field.updateValueAndValidity();
+      field.markAsDirty();
     }
     if (input) {
       input.value = '';
@@ -56,10 +56,9 @@ export class ServiceDefComponent implements OnInit {
 
     if (index >= 0) {
       field.value.splice(index, 1);
-      field.updateValueAndValidity();
+      field.markAsDirty();
     }
   }
-
 
   /* Accessors */
   get serviceUrl() {
