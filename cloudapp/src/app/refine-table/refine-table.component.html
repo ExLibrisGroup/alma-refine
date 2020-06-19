@@ -1,20 +1,19 @@
-<div class="refine-options">
-  <a [routerLink]="['']"><button mat-raised-button><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button></a>
-  <div class="refine-action-buttons">
-    <button mat-raised-button (click)="save()" color="primary" [disabled]="totalRecords== 0">{{'Refine.Save' | translate}}</button>
-  </div>
-</div>
-
-<div class="mat-elevation-z8 refine-table-container">
+<div [hidden]="!dataSource" class="refine-table-container">
   <div class="loading-shade" *ngIf="status.isLoading">
     <mat-progress-spinner 
-      [mode]="status.percentComplete >=0 ? 'determinate' : 'indeterminate'"
+      mode="indeterminate"
+      diameter="50"
       [value]="status.percentComplete"
       >
     </mat-progress-spinner>
     <div class="loading-percent" *ngIf="status.percentComplete>=0">{{status.percentComplete}}%</div>
   </div>
-
+  <div class="refine-options">
+    <a [routerLink]="['']"><button mat-raised-button><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button></a>
+    <div class="refine-action-buttons">
+      <button mat-raised-button (click)="save()" color="primary" [disabled]="totalRecords== 0">{{'Refine.Save' | translate}}</button>
+    </div>
+  </div>
   <mat-table [dataSource]="dataSource" class="full-width-table">
     <!-- Id Column -->
     <ng-container matColumnDef="id">

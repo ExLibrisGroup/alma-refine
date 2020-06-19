@@ -9,9 +9,8 @@
             <mat-select-trigger>{{field.selectedRefineOption?.value}}</mat-select-trigger>
             <mat-option (click)="field.selectedRefineOption=null">None</mat-option>
             <mat-option *ngFor="let option of field.refineOptions" [value]="option">
-              {{ option.value }}
-              <span *ngIf="option.previewUrl">
-                <mat-icon (mouseover)="showPreview($event,option.previewUrl)" (mouseout)="hidePreview()">info</mat-icon>
+              <span [attr.data-preview-url]="option.previewUrl ? option.previewUrl : null">
+                {{ option.value }}
               </span>
             </mat-option>
           </mat-select>          
@@ -19,4 +18,7 @@
       <mat-divider *ngIf="!isLast"></mat-divider>
     </mat-list-item>
   </mat-list>
+</div>
+<div style="display: none;">
+  <iframe #previewFrame id="previewFrame" frameborder="0" height="200" width="350" scrolling="auto"></iframe>    
 </div>

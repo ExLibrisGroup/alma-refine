@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule, getTranslateModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -43,7 +44,8 @@ export function getToastrModule() {
       getTranslateModule(),
       getToastrModule(),
       FormsModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
+      NgxTippyModule
    ],
    providers: [],
    bootstrap: [

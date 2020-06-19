@@ -6,7 +6,7 @@ import { ConfigService } from '../services/config.service';
 import { Set } from '../models/set';
 import { FormControl } from '@angular/forms';
 import { SelectSetComponent } from '../select-set/select-set.component';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { SelectEntitiesComponent } from '../select-entities/select-entities.component';
 

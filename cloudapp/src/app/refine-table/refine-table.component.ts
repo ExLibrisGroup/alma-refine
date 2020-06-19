@@ -19,7 +19,7 @@ export class RefineTableComponent implements OnInit {
   dataSource: RefineTableDataSource;
   setId: string;
   mmsIds: string[];
-  previewSize: { height: number, width: number } | {};
+  previewSize: { height: number, width: number };
   status = { isLoading: false, recordCount: 0, percentComplete: -1 };
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
@@ -33,13 +33,18 @@ export class RefineTableComponent implements OnInit {
     private toastr: ToastrService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setId = this.route.snapshot.params['setId'];
     if (this.route.snapshot.params['mmsIds'])
       this.mmsIds = this.route.snapshot.params['mmsIds'].split(',');
+    await this.setPreviewSize();
     this.dataSource = new RefineTableDataSource(this.bibsService, this.configService, this.refineService,
       this.mmsIds, this.setId);
-    this.setPreviewSize();
+    this.page();
+  }
+
+  ngOnDestroy() {
+    this.dataSource = null;
   }
 
   ngAfterViewInit() {
@@ -48,17 +53,21 @@ export class RefineTableComponent implements OnInit {
   }
 
   page() {
-    this.status.isLoading = true;
-    this.dataSource.loadBibs({ pageSize: this.paginator.pageSize, pageIndex: this.paginator.pageIndex })
-      .subscribe({ complete: () => this.status.isLoading = false });
+    if (this.dataSource) {
+      this.status.isLoading = true;
+      this.dataSource.loadBibs({ pageSize: this.paginator.pageSize, pageIndex: this.paginator.pageIndex })
+        .subscribe({ complete: () => this.status.isLoading = false });
+    }
   }
 
   get totalRecords() {
-    return this.dataSource.recordCount;
+    return this.dataSource 
+      ? this.dataSource.recordCount
+      : 0;
   }
 
-  setPreviewSize() {
-    let serviceDetails = this.configService.selectedRefineService.serviceDetails;
+  async setPreviewSize() {
+    let serviceDetails = await this.configService.getSelectedServiceDetails();
     this.previewSize = serviceDetails && serviceDetails.preview ? 
       Utils.pick(['height', 'width'])(serviceDetails.preview) : { height: 200, width: 350 };
   }
@@ -69,7 +78,7 @@ export class RefineTableComponent implements OnInit {
     this.dataSource.saveRefinements().subscribe( {
       next: resp => {
         mmsIds.push(resp);
-        this.status.percentComplete = (mmsIds.length/this.status.recordCount)*100
+        this.status.percentComplete = Math.round((mmsIds.length/this.status.recordCount)*100);
       },
       complete: () => {
         console.log('Updated', mmsIds.join(','));

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Sets } from '../models/set';
 import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import { RefineServiceDef } from '../models/refine-service';
 import { CloudAppRestService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings';
@@ -54,11 +54,25 @@ export class ConfigService {
 
   set selectedRefineService(value: RefineServiceDef) {
     this._selectedRefineService = value;
-    if (value) {
-      try {
-        this.httpClient.get(this._selectedRefineService.url)
-          .subscribe(data=>this._selectedRefineService.serviceDetails=data);
-      } catch(e) {  }
+    this.setServiceDetails().subscribe();
+  }
+
+  setServiceDetails() {
+    return this.httpClient.get(this._selectedRefineService.url)
+    .pipe(
+      tap(data=>this._selectedRefineService.serviceDetails=data),
+      catchError(e=>{
+        console.log('Error retrieving service details', e);
+        this._selectedRefineService.serviceDetails={};
+        return of({});
+      })
+    )
+  }
+
+  async getSelectedServiceDetails() {
+    if (!this._selectedRefineService.serviceDetails) {
+      await this.setServiceDetails().toPromise();
     }
+    return this._selectedRefineService.serviceDetails;
   }
 }

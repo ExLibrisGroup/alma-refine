@@ -1,6 +1,7 @@
-import { Component, Input, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
+import { Component, Input, ViewEncapsulation, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { RefineField, RefineOption } from '../models/bib';
-import { Utils } from '../utilities';
+import { NgxTippyProps } from 'ngx-tippy-wrapper';
+import { delegate } from 'tippy.js'
 
 @Component({
   selector: 'app-refine-bib',
@@ -11,7 +12,30 @@ import { Utils } from '../utilities';
 export class RefineBibComponent  {
   @Input() refinements: RefineField[];
   @Input() previewSize;
+  @ViewChild('previewFrame', {static: false}) 
+  previewFrame: ElementRef;
+
   @Output() refinementSelected = new EventEmitter();
+  
+  tippyProps: NgxTippyProps = {
+    content: reference => {
+      const frame = document.getElementById('previewFrame') as HTMLIFrameElement;
+      let url = reference.getAttribute('data-preview-url');
+      if (url && frame) {
+        frame.src = url;
+        return frame.outerHTML;
+      }
+      return null;
+    },
+    delay: [750, null],
+    allowHTML: true,
+    theme: 'light',
+    interactive: true,
+    maxWidth: 400,
+    appendTo: reference => reference.closest('.mat-select-panel-wrap'),
+    placement: 'left',
+
+  };
   
   constructor() { }
 
@@ -19,25 +43,9 @@ export class RefineBibComponent  {
     return a && b ? a.uri === b.uri : a === b;
   }  
 
-  showPreview(event: MouseEvent, url: string) { 
-    setTimeout(()=>{ 
-      this.hidePreview();
-      const parent = (<Element>event.target).closest(".mat-select-panel");
-      let iframe = Utils.dom('iframe', {
-        parent: parent,
-        className: 'refine-preview-pane',
-        attributes: [
-          [ 'src', url ], ['frameBorder', '0' ],
-          [ 'height', this.previewSize.height || '200' ],
-          [ 'width', this.previewSize.width || '350' ],
-          [ 'scrolling', 'auto' ]
-        ]
-      });
-      if (parent) parent.parentNode.insertBefore(iframe, parent.nextSibling);
-    }, 1000);
+  ngAfterViewInit() {
+    this.previewFrame.nativeElement.height = this.previewSize.height;
+    this.previewFrame.nativeElement.width = this.previewSize.width;
+    delegate('body', Object.assign(this.tippyProps, { target: '[data-preview-url]'}));
   }
-  
-  hidePreview() { 
-    Utils.removeElements( document.querySelectorAll(".refine-preview-pane") );
-  }  
 }

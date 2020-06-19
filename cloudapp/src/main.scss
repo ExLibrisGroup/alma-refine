@@ -1,6 +1,8 @@
 
 @import './app/main/main.component.theme';
 @import './app/refine-table/refine-table.component.theme';
+@import '../../node_modules/tippy.js/dist/tippy.css';
+@import '../../node_modules/tippy.js/themes/light.css';
 
 @mixin themed-styles($theme, $typography) {
     /* Include themed component mixins or theme dependent styles here */
