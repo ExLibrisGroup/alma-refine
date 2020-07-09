@@ -13,7 +13,7 @@
   {
     "name": "Wikidata",
     "description": "",
-    "url": "https://tools.wmflabs.org/openrefine-wikidata/en/api",
+    "url": "https://wdreconcile.toolforge.org/en/api",
     "prefix": "",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] }
