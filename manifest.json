@@ -25,11 +25,15 @@
       "connectSrc": [
          "https://services.getty.edu/",
          "https://tools.wmflabs.org/",
+         "https://wdreconcile.toolforge.org/",
+         "https://openrefine-wikidata.toolforge.org",
          "https://geonames-openrefine.herokuapp.com/"
       ],
       "frameSrc": [
          "https://services.getty.edu/",
          "https://tools.wmflabs.org/",
+         "https://wdreconcile.toolforge.org/",
+         "https://openrefine-wikidata.toolforge.org",
          "https://geonames-openrefine.herokuapp.com/"
       ],
       "sandbox": {

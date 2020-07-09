@@ -67,9 +67,11 @@ export class RefineTableComponent implements OnInit {
   }
 
   async setPreviewSize() {
+    this.status.isLoading = true;
     let serviceDetails = await this.configService.getSelectedServiceDetails();
     this.previewSize = serviceDetails && serviceDetails.preview ? 
       Utils.pick(['height', 'width'])(serviceDetails.preview) : { height: 200, width: 350 };
+    this.status.isLoading = false;
   }
 
   save() {
