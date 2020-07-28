@@ -35,7 +35,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.serviceSelect = new FormControl(this.configService.selectedRefineService);
-    this.configService.getSettings().subscribe(settings=>this.refineServices=settings.refineServices);
+    this.configService.getSettings().subscribe(settings=>this.refineServices=Object.values(settings.refineServices));
     this.pageLoad$ = this.eventsService.onPageLoad(this.onPageLoad);
   }
 

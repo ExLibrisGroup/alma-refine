@@ -1,10 +1,14 @@
 export interface RefineServiceDef {
   name: string,
-  description: string,
   url: string,
   prefix?: string,
   fields: RefineServiceField[],
+  uriSubfield?: string,
   serviceDetails?: any
+}
+
+export interface RefineServices {
+  [key: string]: RefineServiceDef
 }
 
 export class RefineServiceField {
@@ -33,4 +37,36 @@ export interface RefineResult {
   match: boolean,
   name: string,
   score: number
+}
+
+export const defaultRefineServices: RefineServices = {
+  "getty" : {
+    "name": "Getty Vocabularies",
+    "url": "https://services.getty.edu/vocab/reconcile/",
+    "prefix": "http://vocab.getty.edu/",
+    "fields": [
+      { "tag": "1xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": [] },
+      { "tag": "6xx", "subfield": "a", "indexes": ["/all"], "subfield2": ["ulan", "aat", "tgn"] },
+      { "tag": "7xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": ["ulan"] }
+    ],
+    "uriSubfield": "0"
+  },
+  "wikidata": {
+    "name": "Wikidata",
+    "url": "https://wdreconcile.toolforge.org/en/api",
+    "prefix": "",
+    "fields": [
+      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] }
+    ],
+    "uriSubfield": "1"
+  },
+  "geonames" : {
+    "name": "GeoNames",
+    "url": "https://api.exldevnetwork.net/geonames-openrefine/reconcile",
+    "prefix": "http://sws.geonames.org/",
+    "fields": [
+      { "tag": "751", "subfield": "a", "indexes": [], "subfield2": [] }
+    ],
+    "uriSubfield": "1"
+  }
 }

@@ -1,8 +1,6 @@
-import { RefineServiceDef } from "./refine-service";
-
-import defaultRefineServices from './refineServices.json';
+import { defaultRefineServices, RefineServices } from "./refine-service";
 
 export class Settings {
   applyRefinementsToAllValues: boolean = true;
-  refineServices: RefineServiceDef[] = defaultRefineServices;
+  refineServices: RefineServices = defaultRefineServices;
 }

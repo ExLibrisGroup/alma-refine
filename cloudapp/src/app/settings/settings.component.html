@@ -17,7 +17,7 @@
 
   <h2 translate>Settings.RefineServices</h2>
   <mat-accordion>
-    <app-settings-service-def *ngFor="let service of services.controls" [form]="service">
+    <app-settings-service-def *ngFor="let service of services.controls | keyvalue" [form]="service.value">
     </app-settings-service-def>
   </mat-accordion>
 

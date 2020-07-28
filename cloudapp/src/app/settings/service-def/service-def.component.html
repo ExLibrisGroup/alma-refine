@@ -9,15 +9,7 @@
       <mat-label translate>Settings.ServiceDef.Name</mat-label>
       <input matInput type="text" [formControl]="form.controls.name" required>
       <mat-error *ngIf="form.controls.name.invalid" translate>Settings.ServiceDef.Errors.Name</mat-error>
-    </mat-form-field>
-    <mat-form-field class="full-width">
-      <mat-label translate>Settings.ServiceDef.Description</mat-label>
-      <textarea matInput cdkTextareaAutosize
-      cdkAutosizeMinRows="1"
-      cdkAutosizeMaxRows="5"
-      [formControl]="form.controls.description">
-    </textarea>
-    </mat-form-field>    
+    </mat-form-field>  
     <mat-form-field class="full-width">
       <mat-label translate>Settings.ServiceDef.ServiceURL</mat-label>
       <span class="url-origin">{{url.origin}}</span><input matInput type="text" [(ngModel)]="serviceUrl">
@@ -27,6 +19,13 @@
       <mat-hint translate>Settings.ServiceDef.PrefixHint</mat-hint>
       <input matInput type="text" [formControl]="form.controls.prefix">
     </mat-form-field>
+    <div class="full-width radio-container">
+      <label translate>Settings.ServiceDef.UriField</label>
+      <mat-radio-group aria-label="Select an option" [formControl]="form.controls.uriSubfield" >
+        <mat-radio-button value="0">$0</mat-radio-button>
+        <mat-radio-button value="1">$1</mat-radio-button>
+      </mat-radio-group>
+    </div>      
     <h3 translate>Settings.ServiceDef.Fields</h3>
     <div class="field-list">
       <div class="field-input" *ngFor="let f of fields.controls; index as i">

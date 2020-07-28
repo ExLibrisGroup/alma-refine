@@ -13,16 +13,19 @@ export const fieldFormGroup = (field: RefineServiceField = null): FormGroup => {
 }
 
 export const settingsFormGroup = (settings: Settings): FormGroup => {
+  let servicesFormGroups = new FormGroup({});
+  Object.entries(settings.refineServices).forEach(([key, value]) => 
+    servicesFormGroups.addControl(key, 
+      new FormGroup({
+        name: new FormControl(value.name, Validators.required),
+        url: new FormControl(value.url),
+        prefix: new FormControl(value.prefix),
+        uriSubfield: new FormControl(value.uriSubfield),
+        fields: new FormArray(value.fields.map( fieldFormGroup ))
+      }))
+  );
   return new FormGroup({
     applyRefinementsToAllValues: new FormControl(settings.applyRefinementsToAllValues),
-    refineServices: new FormArray(
-      settings.refineServices.map( s=>new FormGroup({
-        name: new FormControl(s.name, Validators.required),
-        description: new FormControl(s.description),
-        url: new FormControl(s.url),
-        prefix: new FormControl(s.prefix),
-        fields: new FormArray(s.fields.map( fieldFormGroup ))
-      }))
-    )
+    refineServices: servicesFormGroups
   });
 }

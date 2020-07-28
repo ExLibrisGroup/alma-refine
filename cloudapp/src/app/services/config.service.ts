@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Sets } from '../models/set';
 import { Observable, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
-import { RefineServiceDef } from '../models/refine-service';
+import { merge } from 'lodash';
+import { pickDeep } from 'deepdash-es/standalone';
+import { RefineServiceDef, defaultRefineServices } from '../models/refine-service';
 import { CloudAppRestService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings';
 
@@ -36,8 +38,16 @@ export class ConfigService {
     } else {
       return this.settingsService.get()
         .pipe(
-          map(settings=>
-            (Object.keys(settings).length==0) ? new Settings() : settings
+          map(settings=> {
+            if (Object.keys(settings).length==0 || Array.isArray(settings.refineServices)) {
+              /* Default or old settings */
+              return new Settings()
+            } else {
+              /* Merge new settings and URLs */
+              settings.refineServices = merge(defaultRefineServices, settings.refineServices, pickDeep(defaultRefineServices, ['url']));
+              return settings;
+            }
+          }
           ),
           tap(settings=>this._settings=settings)
         );
@@ -46,6 +56,8 @@ export class ConfigService {
 
   setSettings(val: Settings) {
     this._settings = val;
+    this.selectedRefineService = null;
+    return this.settingsService.set(val);
   }
 
   get selectedRefineService(): RefineServiceDef {
@@ -54,7 +66,7 @@ export class ConfigService {
 
   set selectedRefineService(value: RefineServiceDef) {
     this._selectedRefineService = value;
-    this.setServiceDetails().subscribe();
+    if (value != null) this.setServiceDetails().subscribe();
   }
 
   setServiceDetails() {

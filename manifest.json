@@ -23,18 +23,14 @@
    ],
    "contentSecurity": {
       "connectSrc": [
-         "https://services.getty.edu/",
-         "https://tools.wmflabs.org/",
-         "https://wdreconcile.toolforge.org/",
-         "https://openrefine-wikidata.toolforge.org",
-         "https://geonames-openrefine.herokuapp.com/"
+         "https://services.getty.edu",
+         "https://wdreconcile.toolforge.org",
+         "https://api.exldevnetwork.net"
       ],
       "frameSrc": [
-         "https://services.getty.edu/",
-         "https://tools.wmflabs.org/",
-         "https://wdreconcile.toolforge.org/",
-         "https://openrefine-wikidata.toolforge.org",
-         "https://geonames-openrefine.herokuapp.com/"
+         "https://services.getty.edu",
+         "https://wdreconcile.toolforge.org",
+         "https://api.exldevnetwork.net"
       ],
       "sandbox": {
          "modals": true

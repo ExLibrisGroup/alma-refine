@@ -10,6 +10,6 @@
     <mat-checkbox [value]="entity.id"
     [(ngModel)]="entity.checked"
     (change)="listChange($event)"
-    >{{entity.id}}</mat-checkbox>
+    >{{entity.description}} ({{entity.id}})</mat-checkbox>
   </mat-list-item> 
 </mat-list>

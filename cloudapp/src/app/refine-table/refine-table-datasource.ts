@@ -123,12 +123,12 @@ export class RefineTableDataSource implements DataSource<Bib> {
         if (datafield) {
           if (field.selectedRefineOption) {
             datafield.textContent=field.selectedRefineOption.value;
-            /* Add subfield 0 if not exists */
-            let uri = Utils.select(doc, 'subfield[@code="0"]', { context: datafield.parentNode, single: true }).singleNodeValue;
+            /* Add uri subfield if not exists */
+            let uri = Utils.select(doc, `subfield[@code="${this.configService.selectedRefineService.uriSubfield}"]`, { context: datafield.parentNode, single: true }).singleNodeValue;
             if (uri) {
               uri.textContent = field.selectedRefineOption.uri
             } else {
-              Utils.dom("subfield", { parent: datafield.parentNode, text: field.selectedRefineOption.uri, attributes: [ ["code", "0"] ]});
+              Utils.dom("subfield", { parent: datafield.parentNode, text: field.selectedRefineOption.uri, attributes: [ ["code", this.configService.selectedRefineService.uriSubfield] ]});
             }
           }
         }
@@ -157,7 +157,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {
         let subfields = Utils.select(doc, `subfield[@code="${field.subfield}"]`, {context: datafield});
-        let uri = Utils.select(doc, 'subfield[@code="0"]', {context: datafield, single: true});
+        let uri = Utils.select(doc, `subfield[@code="${this.configService.selectedRefineService.uriSubfield}"]`, {context: datafield, single: true});
         if(subfield=subfields.iterateNext() as Element) {
           refineFields.push({
             tag: datafield.getAttribute('tag'),

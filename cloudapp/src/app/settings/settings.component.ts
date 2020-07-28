@@ -29,8 +29,7 @@ export class SettingsComponent implements OnInit {
   }
 
   load() {
-    this.settingsService.get().subscribe( (settings: Settings) => {
-      if (Object.keys(settings).length==0) settings = new Settings();
+    this.configService.getSettings().subscribe( (settings: Settings) => {
       this.form = settingsFormGroup(settings);
     });
   }
@@ -39,11 +38,7 @@ export class SettingsComponent implements OnInit {
     if (!this.form.valid) return;
     this.saving = true;
     
-    /* Update cached settings in the config service */
-    this.configService.setSettings(this.form.value);
-    this.configService.selectedRefineService = null;
-
-    this.settingsService.set(this.form.value).subscribe( () => {
+    this.configService.setSettings(this.form.value).subscribe( () => {
       this.toastr.success(this.translate.instant('Settings.Saved'));
       this.form.markAsPristine();
       this.saving = false;
@@ -62,8 +57,8 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  get services(): FormArray { 
-    return this.form.get('refineServices') as FormArray; 
+  get services() { 
+    return this.form.get('refineServices') as FormGroup
   }
 }
 

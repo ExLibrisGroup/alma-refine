@@ -37,7 +37,7 @@
 		"RestoreConfirm": "Restore default settings and lose all local configuration?",
 		"ServiceDef": {
 			"Name": "Name",
-			"Description": "Description",
+			"UriField": "URI Subfield",
 			"ServiceURL": "Service URL",
 			"Prefix": "Prefix",
 			"PrefixHint": "Optional URI prefix for $0",
