@@ -7,7 +7,7 @@ import * as crc from 'js-crc';
 import { from } from 'rxjs';
 import { mergeMap, toArray, map } from 'rxjs/operators';
 
-const BATCH_SIZE = 2;
+const BATCH_SIZE = 10;
 const MAX_CONCURRENCY = 5;
 
 @Injectable({
@@ -20,7 +20,14 @@ export class RefineService {
   /** Calls refine service to query specified terms */
   callRefineService(refinements: Refinements, refineServiceDef: RefineServiceDef) {
     /* Convert refinements into de-duped list of Refine service queries */
-    let queries: RefineQueries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => ({ ...a, [crc.crc32(c.value)]: {query: c.value, limit: 10, type: c.indexes}}), {});
+    let queries: RefineQueries = [].concat.apply([],Object.values(refinements)).reduce((a, c) => {
+      let q = {query: c.value, limit: 10};
+      /* Add type query if defined */
+      if (Array.isArray(c.indexes) && c.indexes.length > 0) {
+        q['type'] = c.indexes;
+      }
+      return ({ ...a, [crc.crc32(c.value)]:  q})
+    }, {});
     /* Call refine service in chunks */
     return from(Utils.chunk(Object.keys(queries), BATCH_SIZE)).pipe(
       mergeMap(keys=>this.httpClient.get<RefineResponse>(refineServiceDef.url, 

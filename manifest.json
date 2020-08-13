@@ -25,12 +25,14 @@
       "connectSrc": [
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
-         "https://api.exldevnetwork.net"
+         "https://api.exldevnetwork.net",
+         "https://lobid.org"
       ],
       "frameSrc": [
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
-         "https://api.exldevnetwork.net"
+         "https://api.exldevnetwork.net",
+         "https://lobid.org"
       ],
       "sandbox": {
          "modals": true
