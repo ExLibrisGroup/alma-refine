@@ -1,15 +1,17 @@
-<div class="title">
-  <h1 translate>Settings.Title</h1>
-  <a [routerLink]="['']">
-    <button mat-raised-button>
+<div class="loading-shade" *ngIf="saving">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+<form [formGroup]="form" *ngIf="form">
+  <div class="cloudapp-actions">
+    <button mat-flat-button color="secondary" [routerLink]="['/']">
       <mat-icon>arrow_back</mat-icon>
       {{'Settings.Back' | translate}}
     </button>
-  </a>
-</div>
-
-<form [formGroup]="form" *ngIf="form">
-
+    <button mat-flat-button color="secondary" (click)="restore()">{{ 'Settings.RestoreDefault' | translate}}</button>
+    <button mat-flat-button color="secondary" type="button" (click)="reset()" [disabled]="!form.dirty">{{ 'Settings.Reset' | translate }}</button> 
+    <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="!form.dirty">{{ 'Settings.Save' | translate }}</button>
+  </div>
+  <h1 translate>Settings.Title</h1>
   <h2 translate>Settings.General</h2>
   <section class="settings-section">
     <mat-checkbox labelPosition="after" formControlName="applyRefinementsToAllValues">{{'Settings.Apply' | translate}}</mat-checkbox>
@@ -20,13 +22,6 @@
     <app-settings-service-def *ngFor="let service of services.controls | keyvalue" [form]="service.value">
     </app-settings-service-def>
   </mat-accordion>
-
-  <div class="commands-container">
-    <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty">{{ 'Settings.Save' | translate }}</button>
-    <button mat-stroked-button type="button" (click)="reset()" [disabled]="!form.dirty">{{ 'Settings.Reset' | translate }}</button> 
-    <button mat-flat-button (click)="restore()">{{ 'Settings.RestoreDefault' | translate}}</button>
-    <mat-spinner diameter="30" class="spinner" *ngIf="saving"></mat-spinner>
-  </div>
 </form>
 
 

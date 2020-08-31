@@ -60,6 +60,12 @@ export class ConfigService {
     return this.settingsService.set(val);
   }
 
+  resetSettings() {
+    this._settings = null;
+    this.selectedRefineService = null;
+    return this.settingsService.remove();
+  }
+
   get selectedRefineService(): RefineServiceDef {
     return this._selectedRefineService;
   }

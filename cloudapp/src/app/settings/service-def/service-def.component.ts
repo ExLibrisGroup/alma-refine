@@ -35,6 +35,7 @@ export class ServiceDefComponent implements OnInit {
     if (confirm(this.translate.instant('Settings.ServiceDef.RemoveField'))) {
       this.fields.removeAt(index);
       this.form.updateValueAndValidity();
+      this.form.markAsDirty();
     }
   }
 

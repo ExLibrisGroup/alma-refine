@@ -21,6 +21,7 @@ export const settingsFormGroup = (settings: Settings): FormGroup => {
         url: new FormControl(value.url),
         prefix: new FormControl(value.prefix),
         uriSubfield: new FormControl(value.uriSubfield),
+        correctTerm: new FormControl(value.correctTerm),
         fields: new FormArray(value.fields.map( fieldFormGroup ))
       }))
   );

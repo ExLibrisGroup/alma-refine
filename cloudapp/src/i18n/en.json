@@ -38,6 +38,7 @@
 		"ServiceDef": {
 			"Name": "Name",
 			"UriField": "URI Subfield",
+			"CorrectTerm": "Correct term",
 			"ServiceURL": "Service URL",
 			"Prefix": "Prefix",
 			"PrefixHint": "Optional URI prefix for $0",

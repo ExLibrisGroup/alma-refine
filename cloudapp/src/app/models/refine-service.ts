@@ -4,6 +4,7 @@ export interface RefineServiceDef {
   prefix?: string,
   fields: RefineServiceField[],
   uriSubfield?: string,
+  correctTerm?: boolean,
   serviceDetails?: any
 }
 
@@ -49,16 +50,18 @@ export const defaultRefineServices: RefineServices = {
       { "tag": "6xx", "subfield": "a", "indexes": ["/all"], "subfield2": ["ulan", "aat", "tgn"] },
       { "tag": "7xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": ["ulan"] }
     ],
-    "uriSubfield": "0"
+    "uriSubfield": "0",
+    "correctTerm": true,
   },
   "wikidata": {
     "name": "Wikidata",
     "url": "https://wdreconcile.toolforge.org/en/api",
-    "prefix": "",
+    "prefix": "http://www.wikidata.org/entity/",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] }
     ],
-    "uriSubfield": "1"
+    "uriSubfield": "1",
+    "correctTerm": false,
   },
   "geonames" : {
     "name": "GeoNames",
@@ -67,15 +70,18 @@ export const defaultRefineServices: RefineServices = {
     "fields": [
       { "tag": "751", "subfield": "a", "indexes": [], "subfield2": [] }
     ],
-    "uriSubfield": "1"
+    "uriSubfield": "1",
+    "correctTerm": false,
   },
   "gnd" : {
     "name": "GND",
     "url": "https://lobid.org/gnd/reconcile",
     "prefix": "https://d-nb.info/gnd/",
     "fields": [
-      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] }
+      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] },
+      { "tag": "650", "subfield": "a", "indexes": [], "subfield2": ["gnd"] },
     ],
-    "uriSubfield": "0"
+    "uriSubfield": "0",
+    "correctTerm": true,
   },
 }

@@ -122,7 +122,10 @@ export class RefineTableDataSource implements DataSource<Bib> {
         let datafield = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`, { single: true }).singleNodeValue;
         if (datafield) {
           if (field.selectedRefineOption) {
-            datafield.textContent=field.selectedRefineOption.value;
+            /* Correct term */
+            if (this.configService.selectedRefineService.correctTerm) {
+              datafield.textContent=field.selectedRefineOption.value;
+            }
             /* Add uri subfield if not exists */
             let uri = Utils.select(doc, `subfield[@code="${this.configService.selectedRefineService.uriSubfield}"]`, { context: datafield.parentNode, single: true }).singleNodeValue;
             if (uri) {
@@ -151,7 +154,7 @@ export class RefineTableDataSource implements DataSource<Bib> {
         }
       }
       if (field.subfield2.length!=0)
-        xpath.push(`contains("${field.subfield2.join(' ')}", subfield[@code="2"]) and string-length(subfield[@code="2"]) != 0`);
+        xpath.push(`contains("${field.subfield2.join(' ').toLocaleLowerCase()}", ${lower('subfield[@code="2"]')}) and string-length(subfield[@code="2"]) != 0`);        
 
       let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
@@ -173,3 +176,5 @@ export class RefineTableDataSource implements DataSource<Bib> {
   }
 
 }
+
+const lower = val =>  `translate(${val}, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')`;

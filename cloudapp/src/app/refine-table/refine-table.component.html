@@ -8,11 +8,9 @@
     </mat-progress-spinner>
     <div class="loading-percent" *ngIf="status.percentComplete>=0">{{status.percentComplete}}%</div>
   </div>
-  <div class="refine-options">
-    <a [routerLink]="['']"><button mat-raised-button><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button></a>
-    <div class="refine-action-buttons">
-      <button mat-raised-button (click)="save()" color="primary" [disabled]="totalRecords== 0">{{'Refine.Save' | translate}}</button>
-    </div>
+  <div class="cloudapp-actions">
+    <button mat-flat-button color="secondary" [routerLink]="['']"><mat-icon>arrow_back</mat-icon> {{ 'Refine.Back' | translate}}</button>
+    <button mat-flat-button (click)="save()" color="primary" [disabled]="totalRecords== 0">{{'Refine.Save' | translate}}</button>
   </div>
   <mat-table [dataSource]="dataSource" class="full-width-table">
     <!-- Id Column -->

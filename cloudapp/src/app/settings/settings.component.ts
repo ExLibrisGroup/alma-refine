@@ -18,7 +18,6 @@ export class SettingsComponent implements OnInit {
   saving = false;
 
   constructor(
-    private settingsService: CloudAppSettingsService,
     private translate: TranslateService,
     private toastr: ToastrService,
     private configService: ConfigService
@@ -52,8 +51,11 @@ export class SettingsComponent implements OnInit {
 
   restore() {
     if (confirm(this.translate.instant('Settings.RestoreConfirm'))) {
-      this.form = settingsFormGroup(new Settings());
-      this.form.markAsDirty();
+      this.saving = true;
+      this.configService.resetSettings().subscribe(()=>{
+        this.saving = false;
+        this.load();
+      });
     }
   }
 

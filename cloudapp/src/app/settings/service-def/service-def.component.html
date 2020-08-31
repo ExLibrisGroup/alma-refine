@@ -26,6 +26,9 @@
         <mat-radio-button value="1">$1</mat-radio-button>
       </mat-radio-group>
     </div>      
+    <div class="full-width radio-container">
+      <mat-checkbox labelPosition="after" [formControl]="form.controls.correctTerm">{{'Settings.ServiceDef.CorrectTerm' | translate}}</mat-checkbox>
+    </div>      
     <h3 translate>Settings.ServiceDef.Fields</h3>
     <div class="field-list">
       <div class="field-input" *ngFor="let f of fields.controls; index as i">
