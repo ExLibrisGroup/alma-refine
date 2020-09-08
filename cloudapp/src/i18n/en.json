@@ -17,7 +17,8 @@
 	},
 	"RefineBib": {
 		"NoRefinements": "No refinements found",
-		"Retrieving": "Retrieving refinements...."
+		"Retrieving": "Retrieving refinements....",
+		"Error": "An error occurred retrieved the refinements: "
 	},
 	"SetSelect": {
 		"SelectSet": "Select a set"

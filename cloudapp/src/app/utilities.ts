@@ -41,8 +41,9 @@ export const Utils = {
   dom: (name: string, options: {parent?: Element | Node, text?: string, className?: string, 
     id?: string, attributes?: string[][]} = {}): Element => {
 
-    let element = document.createElement(name);
-
+    let ns = options.parent ? options.parent.namespaceURI : '';
+    let element = document.createElementNS(ns, name);
+    
     if (options.parent) options.parent.appendChild(element);
     if (options.text) element.innerHTML = options.text;
     if (options.className) element.className = options.className;

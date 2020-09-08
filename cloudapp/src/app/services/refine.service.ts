@@ -24,7 +24,7 @@ export class RefineService {
       let q = {query: c.value, limit: 10};
       /* Add type query if defined */
       if (Array.isArray(c.indexes) && c.indexes.length > 0) {
-        q['type'] = c.indexes;
+        q['type'] = c.indexes.length == 1 ? c.indexes[0] : c.indexes;
       }
       return ({ ...a, [crc.crc32(c.value)]:  q})
     }, {});
