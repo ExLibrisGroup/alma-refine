@@ -26,13 +26,13 @@
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
          "https://api.exldevnetwork.net",
-         "https://lobid.org"
+         "https://test.lobid.org"
       ],
       "frameSrc": [
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
          "https://api.exldevnetwork.net",
-         "https://lobid.org"
+         "https://test.lobid.org"
       ],
       "sandbox": {
          "modals": true

@@ -75,7 +75,7 @@ export const defaultRefineServices: RefineServices = {
   },
   "gnd" : {
     "name": "GND",
-    "url": "https://lobid.org/gnd/reconcile",
+    "url": "https://test.lobid.org/gnd/reconcile",
     "prefix": "https://d-nb.info/gnd/",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] },

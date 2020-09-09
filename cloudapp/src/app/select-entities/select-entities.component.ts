@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Entity } from '@exlibris/exl-cloudapp-angular-lib';
 
 @Component({
   selector: 'app-select-entities',
   templateUrl: './select-entities.component.html',
-  styleUrls: ['./select-entities.component.scss']
+  styleUrls: ['./select-entities.component.scss'],
+  encapsulation: ViewEncapsulation.None, /* apply to added elements */
 })
 export class SelectEntitiesComponent implements OnInit {
   masterChecked: boolean;
