@@ -75,7 +75,7 @@ export const defaultRefineServices: RefineServices = {
   },
   "gnd" : {
     "name": "GND",
-    "url": "https://test.lobid.org/gnd/reconcile",
+    "url": "https://lobid.org/gnd/reconcile",
     "prefix": "https://d-nb.info/gnd/",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] },
@@ -84,4 +84,16 @@ export const defaultRefineServices: RefineServices = {
     "uriSubfield": "0",
     "correctTerm": true,
   },
+  "bnf" : {
+    "name": "BNF",
+    "url": "https://conciliator.herokuapp.com/reconcile/viafproxy/BNF",
+    "prefix": "https://data.bnf.fr/",
+    "fields": [
+      { "tag": "1xx", "subfield": "a", "indexes": [], "subfield2": [] },
+      { "tag": "6xx", "subfield": "a", "indexes": [], "subfield2": [] },
+      { "tag": "7xx", "subfield": "a", "indexes": [], "subfield2": [] },
+    ],
+    "uriSubfield": "0",
+    "correctTerm": true,
+  }
 }

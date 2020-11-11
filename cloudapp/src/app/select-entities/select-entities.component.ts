@@ -6,7 +6,6 @@ import { Entity } from '@exlibris/exl-cloudapp-angular-lib';
   selector: 'app-select-entities',
   templateUrl: './select-entities.component.html',
   styleUrls: ['./select-entities.component.scss'],
-  encapsulation: ViewEncapsulation.None, /* apply to added elements */
 })
 export class SelectEntitiesComponent implements OnInit {
   masterChecked: boolean;
