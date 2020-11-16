@@ -155,20 +155,21 @@ export class RefineTableDataSource implements DataSource<Bib> {
       }
       if (field.subfield2.length!=0)
         xpath.push(`contains("${field.subfield2.join(' ').toLocaleLowerCase()}", ${lower('subfield[@code="2"]')}) and string-length(subfield[@code="2"]) != 0`);        
-
       let datafields = Utils.select(doc, `/record/datafield[${xpath.join(' and ')}]`);
       let datafield: Element, subfield: Element;
       while (datafield=datafields.iterateNext() as Element) {
         let subfields = Utils.select(doc, `subfield[@code="${field.subfield}"]`, {context: datafield});
         let uri = Utils.select(doc, `subfield[@code="${this.configService.selectedRefineService.uriSubfield}"]`, {context: datafield, single: true});
         if(subfield=subfields.iterateNext() as Element) {
-          refineFields.push({
-            tag: datafield.getAttribute('tag'),
-            subfield: field.subfield, 
-            value: subfield.textContent,
-            selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null,
-            indexes: field.indexes
-          })
+          if (!refineFields.some(f=>f.tag == datafield.getAttribute('tag') && f.subfield == field.subfield)) {
+            refineFields.push({
+              tag: datafield.getAttribute('tag'),
+              subfield: field.subfield, 
+              value: subfield.textContent,
+              selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null,
+              indexes: field.indexes
+            })  
+          }
         }
       };
     })    

@@ -91,9 +91,10 @@ export const defaultRefineServices: RefineServices = {
     "fields": [
       { "tag": "1xx", "subfield": "a", "indexes": [], "subfield2": [] },
       { "tag": "6xx", "subfield": "a", "indexes": [], "subfield2": [] },
+      { "tag": "75x", "subfield": "a", "indexes": ["/location/location"], "subfield2": [] },
       { "tag": "7xx", "subfield": "a", "indexes": [], "subfield2": [] },
     ],
-    "uriSubfield": "0",
+    "uriSubfield": "1",
     "correctTerm": true,
   }
 }
