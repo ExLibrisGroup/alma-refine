@@ -15,21 +15,14 @@ mat-card {
   margin-bottom: 5px;
   color: darkgrey;
 }
-
-.field-tag {
-  width: 15%;
+.field-input {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  column-gap: 1em;
 }
 
-.field-subfield {
-  width: 15%;
-}
-
-.field-indexes {
-  width: 35%;
-}
-
-.field-subfield2 {
-  width: 35%
+.field-large {
+  grid-column: span 2;
 }
 
 div.field-header {

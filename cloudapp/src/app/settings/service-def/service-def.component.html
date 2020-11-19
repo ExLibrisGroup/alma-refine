@@ -31,34 +31,52 @@
     </div>      
     <h3 translate>Settings.ServiceDef.Fields</h3>
     <div class="field-list">
-      <div class="field-input" *ngFor="let f of fields.controls; index as i">
-        <div class="field-header"><span translate [translateParams]="{index: i+1}">Settings.ServiceDef.FieldHeader</span>
+      <div *ngFor="let f of fields.controls; index as i">
+        <div class="field-header">
+          <span translate [translateParams]="{index: i+1}">Settings.ServiceDef.FieldHeader</span>
           <mat-icon (click)="removeField(i)">cancel</mat-icon>
         </div>
-        <mat-form-field class="field-tag" appearance="outline">
+        <div class="field-input">
+        <mat-form-field appearance="outline">
           <mat-label translate>Settings.ServiceDef.Tag</mat-label>
           <input matInput [formControl]="f.controls.tag" required>
           <mat-error *ngIf="f.controls.tag.invalid" translate>Settings.ServiceDef.Errors.Tag</mat-error>
         </mat-form-field>
     
-        <mat-form-field class="field-subfield" appearance="outline">
+        <mat-form-field appearance="outline">
           <mat-label translate>Settings.ServiceDef.Subfield</mat-label>
           <input matInput [formControl]="f.controls.subfield">
           <mat-error *ngIf="f.controls.subfield.invalid" translate>Settings.ServiceDef.Errors.Subfield</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="field-indexes" appearance="outline">
+        <mat-form-field class="field-large" appearance="outline">
           <mat-label translate>Settings.ServiceDef.Indexes</mat-label>
           <mat-select [formControl]="f.controls.indexes" multiple>
             <mat-option *ngFor="let index of indexList" [value]="index.id">{{index.name}}</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="field-indexes" appearance="outline">
+        <mat-form-field class="field-large" appearance="outline">
+          <mat-label translate>Settings.ServiceDef.Hints</mat-label>
+          <mat-chip-list #chipList aria-label="Hint Subfields" [formControl]="f.controls.hints">
+            <mat-chip *ngFor="let val of f.controls.hints.value" selectable="true"
+                     removable="true" (removed)="removeChip(f.controls.hints, val)">
+              {{val}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="{{'Settings.ServiceDef.AddHint' | translate}}"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="'true'"
+                   (matChipInputTokenEnd)="addChip($event, f.controls.hints)">
+          </mat-chip-list>
+        </mat-form-field>        
+
+        <mat-form-field class="field-large" appearance="outline">
           <mat-label translate>Settings.ServiceDef.Subfield2</mat-label>
           <mat-chip-list #chipList aria-label="Subfield2 Values" [formControl]="f.controls.subfield2">
             <mat-chip *ngFor="let val of f.controls.subfield2.value" selectable="true"
-                     removable="true" (removed)="removeSubfield2(f.controls.subfield2, val)">
+                     removable="true" (removed)="removeChip(f.controls.subfield2, val)">
               {{val}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
@@ -66,9 +84,10 @@
                    [matChipInputFor]="chipList"
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matChipInputAddOnBlur]="'true'"
-                   (matChipInputTokenEnd)="addSubfield2($event, f.controls.subfield2)">
+                   (matChipInputTokenEnd)="addChip($event, f.controls.subfield2)">
           </mat-chip-list>
-        </mat-form-field>        
+        </mat-form-field>  
+        </div>      
         <mat-divider></mat-divider>
       </div> 
       <button type="button" class="pull-right" (click)="addField()" mat-icon-button aria-label="Add field" title="Add field">

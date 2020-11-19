@@ -7,7 +7,7 @@
     "start": "eca start"
   },
   "dependencies": {
-    "@exlibris/exl-cloudapp-base": "^0.1.25",
+    "@exlibris/exl-cloudapp-base": "^0.2.2",
     "deepdash-es": "^5.2.1",
     "js-crc": "^0.2.0",
     "ngx-tippy-wrapper": "^2.0.0"

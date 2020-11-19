@@ -1,11 +1,14 @@
 <div class="refine-bib">
   <mat-list>
     <mat-list-item *ngFor="let field of refinements ; last as isLast" class="refine-list-item">
-      <p mat-line class="refine-bib-field">{{field.tag}}${{field.subfield}}: {{field.value}}</p>
+      <p mat-line [matTooltip]="field.hint" matTooltipPosition="left" [matTooltipShowDelay]="750" class="refine-bib-field">{{field.tag}}${{field.subfield}}: {{field.value}}</p>
       <mat-label class="refine-options-message" *ngIf="!field.refineOptions" translate>RefineBib.Retrieving</mat-label>
       <mat-label class="refine-options-message" *ngIf="field.refineOptions && field.refineOptions.length==0" translate>RefineBib.NoRefinements</mat-label>      
       <mat-form-field class="refine-bib-options" *ngIf="field.refineOptions && field.refineOptions.length>0">
-          <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" [compareWith]="compareRefineOptions" (selectionChange)="refinementSelected.emit(field)">
+          <mat-select placeholder="Select a refinement" [(value)]="field.selectedRefineOption" 
+            [compareWith]="compareRefineOptions" 
+            (selectionChange)="refinementSelected.emit(field)"
+            [disableOptionCentering]="true">
             <mat-select-trigger>{{field.selectedRefineOption?.value}}</mat-select-trigger>
             <mat-option (click)="field.selectedRefineOption=null">None</mat-option>
             <mat-option *ngFor="let option of field.refineOptions" [value]="option">

@@ -17,6 +17,7 @@ export class RefineServiceField {
   subfield: string = "a";
   subfield2: string[] = [];
   indexes: string[] = [];
+  hints: string[] = [];
 }
 
 export interface RefineQuery {
@@ -46,9 +47,9 @@ export const defaultRefineServices: RefineServices = {
     "url": "https://services.getty.edu/vocab/reconcile/",
     "prefix": "http://vocab.getty.edu/",
     "fields": [
-      { "tag": "1xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": [] },
-      { "tag": "6xx", "subfield": "a", "indexes": ["/all"], "subfield2": ["ulan", "aat", "tgn"] },
-      { "tag": "7xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": ["ulan"] }
+      { "tag": "1xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": [], "hints": [] },
+      { "tag": "6xx", "subfield": "a", "indexes": ["/all"], "subfield2": ["ulan", "aat", "tgn"], "hints": [] },
+      { "tag": "7xx", "subfield": "a", "indexes": ["/ulan"], "subfield2": ["ulan"], "hints": [] }
     ],
     "uriSubfield": "0",
     "correctTerm": true,
@@ -58,7 +59,7 @@ export const defaultRefineServices: RefineServices = {
     "url": "https://wdreconcile.toolforge.org/en/api",
     "prefix": "http://www.wikidata.org/entity/",
     "fields": [
-      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] }
+      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] }
     ],
     "uriSubfield": "1",
     "correctTerm": false,
@@ -68,7 +69,7 @@ export const defaultRefineServices: RefineServices = {
     "url": "https://api.exldevnetwork.net/geonames-openrefine/reconcile",
     "prefix": "http://sws.geonames.org/",
     "fields": [
-      { "tag": "751", "subfield": "a", "indexes": [], "subfield2": [] }
+      { "tag": "751", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] }
     ],
     "uriSubfield": "1",
     "correctTerm": false,
@@ -78,8 +79,8 @@ export const defaultRefineServices: RefineServices = {
     "url": "https://lobid.org/gnd/reconcile",
     "prefix": "https://d-nb.info/gnd/",
     "fields": [
-      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [] },
-      { "tag": "650", "subfield": "a", "indexes": [], "subfield2": ["gnd"] },
+      { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] },
+      { "tag": "650", "subfield": "a", "indexes": [], "subfield2": ["gnd"], "hints": [] },
     ],
     "uriSubfield": "0",
     "correctTerm": true,
@@ -89,12 +90,12 @@ export const defaultRefineServices: RefineServices = {
     "url": "https://conciliator.herokuapp.com/reconcile/viafproxy/BNF",
     "prefix": "https://data.bnf.fr/",
     "fields": [
-      { "tag": "1xx", "subfield": "a", "indexes": [], "subfield2": [] },
-      { "tag": "6xx", "subfield": "a", "indexes": [], "subfield2": [] },
-      { "tag": "75x", "subfield": "a", "indexes": ["/location/location"], "subfield2": [] },
-      { "tag": "7xx", "subfield": "a", "indexes": [], "subfield2": [] },
+      { "tag": "1xx", "subfield": "a", "indexes": [], "subfield2": [], "hints": ["b", "d"] },
+      { "tag": "6xx", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] },
+      { "tag": "75x", "subfield": "a", "indexes": ["/location/location"], "subfield2": [], "hints": ["b", "d"] },
+      { "tag": "7xx", "subfield": "a", "indexes": [], "subfield2": [], "hints": ["b", "d"] },
     ],
     "uriSubfield": "1",
-    "correctTerm": true,
+    "correctTerm": false,
   }
 }

@@ -1,10 +1,9 @@
 import { Component, OnInit, Injectable } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
-import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { FormGroup } from '@angular/forms';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings';
 import { settingsFormGroup } from './service-utils';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
 import { CanDeactivate } from '@angular/router';
 import { ConfigService } from '../services/config.service';
 
@@ -19,7 +18,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private translate: TranslateService,
-    private toastr: ToastrService,
+    private alert: AlertService,
     private configService: ConfigService
   ) { }
 
@@ -38,11 +37,11 @@ export class SettingsComponent implements OnInit {
     this.saving = true;
     
     this.configService.setSettings(this.form.value).subscribe( () => {
-      this.toastr.success(this.translate.instant('Settings.Saved'));
+      this.alert.success(this.translate.instant('Settings.Saved'));
       this.form.markAsPristine();
       this.saving = false;
     },
-    err => this.toastr.error(err.message));
+    err => this.alert.error(err.message));
   }
 
   reset() {

@@ -14,3 +14,16 @@
   width: 250px;
   text-align: center;
 }
+
+/* Wrap refine options in select */
+.mat-select-panel mat-option.mat-option {
+  //margin: 1rem 0;
+  overflow: visible;
+  line-height: initial;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+  
+.mat-option-text.mat-option-text {
+  white-space: normal;
+}

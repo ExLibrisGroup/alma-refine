@@ -7,7 +7,7 @@ import { RefineTableDataSource } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
 import { Utils } from '../utilities';
 import { ActivatedRoute, Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 @Component({
   selector: 'app-refine-table',
@@ -30,7 +30,7 @@ export class RefineTableComponent implements OnInit {
     private refineService: RefineService,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService
+    private alert: AlertService,
   ) { }
 
   async ngOnInit() {
@@ -86,7 +86,7 @@ export class RefineTableComponent implements OnInit {
         console.log('Updated', mmsIds.join(','));
         setTimeout(() => {
           this.status = { isLoading: false, percentComplete: -1, recordCount: 0 };
-          this.toastr.success(`Successfully updated ${mmsIds.length} records.`);
+          this.alert.success(`Successfully updated ${mmsIds.length} records.`, { keepAfterRouteChange: true });
           this.router.navigate(['']);  
         }, 1000)
 

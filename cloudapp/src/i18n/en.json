@@ -49,6 +49,8 @@
 			"Subfield": "Subfield",
 			"Indexes": "Indexes",
 			"Subfield2": "Subfield 2",
+			"Hints": "Hint subfields",
+			"AddHint": "Add...",
 			"AddSubfield2": "Add...",
 			"AddField": "Add field",
 			"RemoveField": "Remove field?",

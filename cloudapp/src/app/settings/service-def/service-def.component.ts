@@ -39,7 +39,7 @@ export class ServiceDefComponent implements OnInit {
     }
   }
 
-  addSubfield2(event: MatChipInputEvent, field: FormControl) {
+  addChip(event: MatChipInputEvent, field: FormControl) {
     const input = event.input;
     const value = event.value;
 
@@ -52,7 +52,7 @@ export class ServiceDefComponent implements OnInit {
     }
   }
 
-  removeSubfield2(field: FormControl, val: string) {
+  removeChip(field: FormControl, val: string) {
     const index = field.value.indexOf(val);
 
     if (index >= 0) {

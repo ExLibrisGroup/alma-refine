@@ -12,4 +12,7 @@
 
 @mixin global-styles {
     /* Add global styles here */
+    app-refine-bib .mat-list-item-content {
+        min-height: 40px;
+    }
 }

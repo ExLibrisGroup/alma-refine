@@ -16,6 +16,17 @@ export const Utils = {
   select: (doc: Document, expression: string, options: {context?: Node, single?: boolean}={context: null, single: false}) => 
     doc.evaluate(expression, options.context || doc, null, options.single ? XPathResult.FIRST_ORDERED_NODE_TYPE : XPathResult.ANY_TYPE, null),
 
+  /** Converts XPathResult to Array */
+  xpathToArray: (nodes: XPathResult) => {
+    let result: Array<String> = [];
+    let node = nodes.iterateNext();
+    while (node) {
+      result.push(node.textContent);
+      node = nodes.iterateNext();
+    }
+    return result;
+  },
+
   /** Asynchronously executes the function for each element in the array */
   asyncForEach: async <T>(array: T[], callback: (item: T, i: number, a: T[]) => Promise<any>) => {
     for (let index = 0; index < array.length; index++) {

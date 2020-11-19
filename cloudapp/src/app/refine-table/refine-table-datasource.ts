@@ -161,10 +161,12 @@ export class RefineTableDataSource implements DataSource<Bib> {
         let subfields = Utils.select(doc, `subfield[@code="${field.subfield}"]`, {context: datafield});
         let uri = Utils.select(doc, `subfield[@code="${this.configService.selectedRefineService.uriSubfield}"]`, {context: datafield, single: true});
         if(subfield=subfields.iterateNext() as Element) {
+          let hints = field.hints.length>0 ? Utils.xpathToArray(Utils.select(doc, `subfield[${field.hints.map(x=>`@code="${x}"`).join(' or ')}]`, {context: datafield})) : [];
           if (!refineFields.some(f=>f.tag == datafield.getAttribute('tag') && f.subfield == field.subfield)) {
             refineFields.push({
               tag: datafield.getAttribute('tag'),
               subfield: field.subfield, 
+              hint: [subfield.textContent, ...hints].join(' '),
               value: subfield.textContent,
               selectedRefineOption: uri.singleNodeValue ? { uri: uri.singleNodeValue.textContent, value: null, previewUrl: null } : null,
               indexes: field.indexes
