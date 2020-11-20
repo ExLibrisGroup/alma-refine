@@ -16,13 +16,19 @@
     <!-- Id Column -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef translate>Refine.MMS</mat-header-cell>
-      <mat-cell class="align-top" *matCellDef="let row">{{row.mms_id}}</mat-cell>
+      <mat-cell class="align-top" *matCellDef="let row">
+        <span class="mobile-label" translate>Refine.MMS</span>
+        {{row.mms_id}}
+      </mat-cell>
     </ng-container>
 
     <!-- Title Column -->
     <ng-container matColumnDef="title">
       <mat-header-cell *matHeaderCellDef translate>Refine.Title</mat-header-cell>
-      <mat-cell class="align-top" *matCellDef="let row">{{row.title}}</mat-cell>
+      <mat-cell class="align-top" *matCellDef="let row">
+        <span class="mobile-label" translate>Refine.Title</span>
+        {{row.title}}
+      </mat-cell>
     </ng-container>
 
     <!-- Refinement Column -->

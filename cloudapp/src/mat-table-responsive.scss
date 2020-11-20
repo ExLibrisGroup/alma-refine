@@ -1,0 +1,27 @@
+
+.mobile-label {
+  display: none;
+}
+
+@media(max-width: 600px) {
+  .mobile-label {
+    width: 80px;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 1em;
+  }
+
+  .mat-header-row {
+    display: none;
+  }
+
+  .mat-row, .mat-cell .mat-list-base .mat-list-item .mat-list-item-content { 
+    flex-direction: column;
+    align-items: start;
+    padding: 8px 24px;
+  }
+
+  .mat-cell:first-of-type {
+    padding-left: 0;
+  }
+}

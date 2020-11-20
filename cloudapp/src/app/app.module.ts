@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule, getTranslateModule, AlertModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { NgxTippyModule } from 'ngx-tippy-wrapper';
 
 import { AppComponent } from './app.component';
@@ -39,7 +40,9 @@ import { ServiceDefComponent } from './settings/service-def/service-def.componen
       ReactiveFormsModule,
       NgxTippyModule
    ],
-   providers: [],
+   providers: [
+      { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'standard' } },
+    ],
    bootstrap: [
       AppComponent
    ]

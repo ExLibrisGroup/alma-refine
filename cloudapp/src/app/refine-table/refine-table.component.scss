@@ -2,14 +2,6 @@
   width: 100%;
 }
 
-mat-cell, mat-header-cell {
-  padding: 10px;
-}
-
-mat-column-title, mat-column-id {
-  line-height: 60px;
-}
-
 .refine-table-container {
   margin-bottom: 30px;
   //display: flex;
@@ -50,11 +42,12 @@ app-refine-bib {
   width: 100%;
 }
 
-.mat-column-id {
-  flex: 0 0 150px;
-}
+@media(min-width: 600px) {
+  .mat-column-id {
+    flex: 0 0 150px;
+  }
 
-.mat-column-refine {
-  flex: 0 0 50%;
+  .mat-column-refine {
+    flex: 0 0 50%;
+  }
 }
-
