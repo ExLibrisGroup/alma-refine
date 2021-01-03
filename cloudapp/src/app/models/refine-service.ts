@@ -6,6 +6,7 @@ export interface RefineServiceDef {
   uriSubfield?: string,
   correctTerm?: boolean,
   serviceDetails?: any
+  convert?: (id: string) => string
 }
 
 export interface RefineServices {
@@ -97,5 +98,7 @@ export const defaultRefineServices: RefineServices = {
     ],
     "uriSubfield": "1",
     "correctTerm": false,
+    /* If ID begins with FRBNF, remove string and last character */
+    "convert": id => { const result = id.match(/^(?:FRBNF)(\d*).$|(?!FRBNF)(.+)$/); return result[1] || result [2] }
   }
 }

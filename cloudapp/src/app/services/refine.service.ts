@@ -50,7 +50,8 @@ export class RefineService {
 
   private setUris(refineServiceDef: RefineServiceDef, id: string) {
     let uri: string, previewUrl: string;
-    uri = (refineServiceDef.prefix || '') + id;
+    const convert = refineServiceDef.convert || (id => id);
+    uri = (refineServiceDef.prefix || '') + convert(id);
     previewUrl = refineServiceDef.serviceDetails.preview &&
       refineServiceDef.serviceDetails.preview.url ? 
       refineServiceDef.serviceDetails.preview.url.replace(/{{id}}/, id) : "";
