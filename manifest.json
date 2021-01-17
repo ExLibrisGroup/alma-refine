@@ -3,7 +3,7 @@
    "title": "Alma Refine",
    "description": "This app can be used to refine bibliographic records with services that adhere to the OpenRefine standard. References to the Getty vocabularies, WikiData, and GeoNames are included with the app.",
    "subtitle": "Refine Alma BIB records using OpenRefine services",
-   "author": "Josh Weisman",
+   "author": "Ex Libris",
    "fullscreen": {
       "allow": true,
       "open": false
