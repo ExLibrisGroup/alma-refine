@@ -100,5 +100,23 @@ export const defaultRefineServices: RefineServices = {
     "correctTerm": false,
     /* If ID begins with FRBNF, remove string and last character */
     "convert": id => { const result = id.match(/^(?:FRBNF)(\d*).$|(?!FRBNF)(.+)$/); return result[1] || result [2] }
-  }
+  },
+  "sudoc" : {
+    "name": "SUDOC",
+    "url": "https://conciliator.herokuapp.com/reconcile/viafproxy/SUDOC",
+    "prefix": "https://www.idref.fr/",
+    "fields": [
+      { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": ["b", "c", "d"] },
+      { "tag": "130", "subfield": "a", "indexes": ["/book/book", "/book/book edition"], "subfield2": [], "hints": [] },
+      { "tag": "700", "subfield": "a", "indexes": ["/people/person", "/book/book", "/book/book edition"], "subfield2": [], "hints": ["b", "c", "d"] },
+      { "tag": "710", "subfield": "a", "indexes": ["/organization/organization", "/book/book", "/book/book edition"], "subfield2": [], "hints": ["b", "c", "d"] },
+      { "tag": "600", "subfield": "a", "indexes": ["/people/person", "/book/book", "/book/book edition"], "subfield2": [], "hints": [] },
+      { "tag": "610", "subfield": "a", "indexes": ["/organization/organization", "/book/book", "/book/book edition"], "subfield2": [], "hints": ["t"] },
+      { "tag": "610", "subfield": "a", "indexes": ["/book/book", "/book/book edition"], "subfield2": [], "hints": [] },
+      { "tag": "651", "subfield": "a", "indexes": ["/location/location"], "subfield2": [], "hints": [] },
+      { "tag": "751", "subfield": "a", "indexes": ["/location/location"], "subfield2": [], "hints": [] },
+    ],
+    "uriSubfield": "1",
+    "correctTerm": false,
+  },  
 }
