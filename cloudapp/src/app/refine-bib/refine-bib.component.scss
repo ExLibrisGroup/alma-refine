@@ -17,14 +17,14 @@
 
 /* Wrap refine options in select */
 .mat-select-panel mat-option.mat-option {
-  //margin: 1rem 0;
   overflow: visible;
   line-height: initial;
   word-wrap: break-word;
   white-space: pre-wrap;
-  margin-bottom: 1rem;
+  height: auto;
 }
   
 .mat-option-text.mat-option-text {
   white-space: normal;
+  margin: 10px 0;
 }
