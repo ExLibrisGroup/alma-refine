@@ -5,7 +5,7 @@ import { BibsService } from '../services/bibs.service';
 import { ConfigService } from '../services/config.service';
 import { RefineTableDataSource } from './refine-table-datasource';
 import { RefineService } from '../services/refine.service';
-import { Utils } from '../utilities';
+import { Utils } from '../utilities/utilities';
 import { ActivatedRoute, Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 

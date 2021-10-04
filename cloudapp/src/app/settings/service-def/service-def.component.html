@@ -3,6 +3,9 @@
       <mat-panel-title>
         {{form.controls.name.value}}
       </mat-panel-title>
+      <mat-panel-description>
+        <i class="uxf-icon uxf-trash eca-button" (click)="$event.stopPropagation(); deleteService()" attr.aria-label="{{'Settings.Delete'|translate}}" title="{{'Settings.Delete'|translate}}"></i>
+      </mat-panel-description>
     </mat-expansion-panel-header>
 
     <mat-form-field class="full-width">
@@ -12,7 +15,7 @@
     </mat-form-field>  
     <mat-form-field class="full-width">
       <mat-label translate>Settings.ServiceDef.ServiceURL</mat-label>
-      <span class="url-origin">{{url.origin}}</span><input matInput type="text" [(ngModel)]="serviceUrl">
+      <input matInput type="text" [formControl]="form.controls.url">
     </mat-form-field>
     <mat-form-field class="full-width">
       <mat-label translate>Settings.ServiceDef.Prefix</mat-label>

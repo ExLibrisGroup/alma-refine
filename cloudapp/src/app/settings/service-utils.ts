@@ -1,4 +1,4 @@
-import { RefineServiceField } from "../models/refine-service";
+import { RefineServiceDef, RefineServiceField } from "../models/refine-service";
 import { FormGroup, FormControl, Validators, FormArray } from "@angular/forms";
 import { Settings } from "../models/settings";
 
@@ -16,18 +16,21 @@ export const fieldFormGroup = (field: RefineServiceField = null): FormGroup => {
 export const settingsFormGroup = (settings: Settings): FormGroup => {
   let servicesFormGroups = new FormGroup({});
   Object.entries(settings.refineServices).forEach(([key, value]) => 
-    servicesFormGroups.addControl(key, 
-      new FormGroup({
-        name: new FormControl(value.name, Validators.required),
-        url: new FormControl(value.url),
-        prefix: new FormControl(value.prefix),
-        uriSubfield: new FormControl(value.uriSubfield),
-        correctTerm: new FormControl(value.correctTerm),
-        fields: new FormArray(value.fields.map( fieldFormGroup ))
-      }))
+    servicesFormGroups.addControl(key, refineServiceFormGroup(value))
   );
   return new FormGroup({
     applyRefinementsToAllValues: new FormControl(settings.applyRefinementsToAllValues),
     refineServices: servicesFormGroups
   });
+}
+
+export const refineServiceFormGroup = (value: RefineServiceDef) => {
+  return new FormGroup({
+    name: new FormControl(value.name, Validators.required),
+    url: new FormControl(value.url),
+    prefix: new FormControl(value.prefix),
+    uriSubfield: new FormControl(value.uriSubfield),
+    correctTerm: new FormControl(value.correctTerm),
+    fields: new FormArray(value.fields.map( fieldFormGroup ))
+  })
 }

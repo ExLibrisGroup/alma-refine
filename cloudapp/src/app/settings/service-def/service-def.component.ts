@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { fieldFormGroup } from '../service-utils';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpProxyService } from '../../services/http.service';
+import { DialogService } from 'eca-components';
 
 @Component({
   selector: 'app-settings-service-def',
@@ -13,12 +14,14 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ServiceDefComponent implements OnInit {
   @Input() form: FormGroup;
+  @Output() onDelete = new EventEmitter();
   indexList: { id: string, name: string }[] = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(
-    private http: HttpClient,
-    private translate: TranslateService
+    private http: HttpProxyService,
+    private translate: TranslateService,
+    private dialog: DialogService,
   ) { }
 
   ngOnInit() {
@@ -32,11 +35,13 @@ export class ServiceDefComponent implements OnInit {
   }
 
   removeField(index: number) {
-    if (confirm(this.translate.instant('Settings.ServiceDef.RemoveField'))) {
+    this.dialog.confirm('Settings.ServiceDef.RemoveField')
+    .subscribe( result => {
+      if (!result) return;
       this.fields.removeAt(index);
       this.form.updateValueAndValidity();
       this.form.markAsDirty();
-    }
+    });
   }
 
   addChip(event: MatChipInputEvent, field: FormControl) {
@@ -61,16 +66,11 @@ export class ServiceDefComponent implements OnInit {
     }
   }
 
+  deleteService() {
+    this.onDelete.emit();
+  }
+
   /* Accessors */
-  get serviceUrl() {
-    return this.url.pathname;
-  }
-  set serviceUrl(val) {
-    this.form.get('url').setValue(this.url.origin + val.replace(/^\/?/, '/'));
-  }
-  get url() {
-    return new URL(this.form.get('url').value);
-  }
   get fields() {
     return this.form.get('fields') as FormArray;
   }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Sets } from '../models/set';
 import { Observable, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
@@ -8,6 +7,7 @@ import { pickDeep } from 'deepdash-es/standalone';
 import { RefineServiceDef, defaultRefineServices } from '../models/refine-service';
 import { CloudAppRestService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings';
+import { HttpProxyService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ConfigService {
   private _settings: Settings;
 
   constructor( 
-    private httpClient: HttpClient,
+    private http: HttpProxyService,
     private restService: CloudAppRestService,
     private settingsService: CloudAppSettingsService
   ) {  }
@@ -76,7 +76,7 @@ export class ConfigService {
   }
 
   setServiceDetails() {
-    return this.httpClient.get(this._selectedRefineService.url)
+    return this.http.get(this._selectedRefineService.url)
     .pipe(
       tap(data=>this._selectedRefineService.serviceDetails=data),
       catchError(e=>{

@@ -2,10 +2,14 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings';
-import { settingsFormGroup } from './service-utils';
+import { refineServiceFormGroup, settingsFormGroup } from './service-utils';
 import { TranslateService } from '@ngx-translate/core';
 import { CanDeactivate } from '@angular/router';
 import { ConfigService } from '../services/config.service';
+import { DialogService } from 'eca-components';
+import { snakeCase, startCase } from 'lodash';
+import { Observable, of } from 'rxjs';
+import { AddServiceDialog, AddServiceDialogResult } from './add-service-dialog.component';
 
 @Component({
   selector: 'app-settings',
@@ -19,7 +23,8 @@ export class SettingsComponent implements OnInit {
   constructor(
     private translate: TranslateService,
     private alert: AlertService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private dialog: DialogService,
   ) { }
 
   ngOnInit() {
@@ -49,17 +54,59 @@ export class SettingsComponent implements OnInit {
   }
 
   restore() {
-    if (confirm(this.translate.instant('Settings.RestoreConfirm'))) {
+    this.dialog.confirm('Settings.RestoreConfirm')
+    .subscribe( result => {
+      if (!result) return;
       this.saving = true;
       this.configService.resetSettings().subscribe(()=>{
         this.saving = false;
         this.load();
       });
-    }
+    })
+  }
+
+  addService() {
+    this.dialog.prompt(AddServiceDialog, {
+      title: 'Settings.Add',
+      prompt: 'Settings.Name'
+    })
+    .subscribe( (result: AddServiceDialogResult ) => {
+      if (!result) return;
+      const name = snakeCase(result.name);
+      if (!name) return;
+      if (this.keys.includes(name)) {
+        return this.dialog.alert({
+          text: ['Settings.Exists', { name: startCase(name) }],
+        });
+      } 
+      this.services.addControl(name, refineServiceFormGroup({
+        name: startCase(name),
+        url: result.url,
+        fields: []
+      }))
+      this.form.markAsDirty();
+    })
+  }
+
+  deleteService(key: string) {
+    console.log('delete', key);
+    this.dialog.confirm({
+      text: ['Settings.ConfirmDelete', { name: startCase(this.services.value[key].name) }] 
+    })
+    .subscribe(result => {
+      if (!result) return;
+      this.services.removeControl(key);
+      this.form.markAsDirty();
+    });
+
   }
 
   get services() { 
     return this.form.get('refineServices') as FormGroup
+  }
+
+  get keys() {
+    return Object.keys(this.services.value) 
   }
 }
 
@@ -69,13 +116,13 @@ export class SettingsComponent implements OnInit {
 })
 export class SettingsGuard implements CanDeactivate<SettingsComponent> {
   constructor(
-    private translate: TranslateService
+    private dialog: DialogService
   ) {}
 
-  canDeactivate(component: SettingsComponent): boolean {
+  canDeactivate(component: SettingsComponent): Observable<boolean> {
     if(component.form.dirty) {
-      return confirm(this.translate.instant('Settings.Discard'));
+      return this.dialog.confirm('Settings.Discard');
     }
-    return true;
+    return of(true);
   }
 }

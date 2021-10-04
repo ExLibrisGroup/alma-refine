@@ -19,9 +19,15 @@
 
   <h2 translate>Settings.RefineServices</h2>
   <mat-accordion>
-    <app-settings-service-def *ngFor="let service of services.controls | keyvalue" [form]="service.value">
+    <app-settings-service-def 
+      *ngFor="let service of services.controls | keyvalue" [form]="service.value"
+      (onDelete)="deleteService(service.key)"
+    >
     </app-settings-service-def>
   </mat-accordion>
+  <div>
+    <button mat-flat-button color="secondary" (click)="addService()"><mat-icon>add_circle</mat-icon> Add Refine Service</button>
+  </div>
 </form>
 
 

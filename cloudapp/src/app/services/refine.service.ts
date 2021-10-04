@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
+import { HttpProxyService } from './http.service';
 import { RefineServiceDef, RefineQueries, RefineResponse } from '../models/refine-service';
 import { Refinements } from '../models/bib';
-import { Utils } from '../utilities';
+import { Utils } from '../utilities/utilities';
 import * as crc from 'js-crc';
 import { from } from 'rxjs';
 import { mergeMap, toArray, map } from 'rxjs/operators';
@@ -15,7 +16,7 @@ const MAX_CONCURRENCY = 5;
 })
 export class RefineService {
 
-  constructor( private httpClient: HttpClient ) { }
+  constructor( private http: HttpProxyService ) { }
 
   /** Calls refine service to query specified terms */
   callRefineService(refinements: Refinements, refineServiceDef: RefineServiceDef) {
@@ -30,7 +31,7 @@ export class RefineService {
     }, {});
     /* Call refine service in chunks */
     return from(Utils.chunk(Object.keys(queries), BATCH_SIZE)).pipe(
-      mergeMap(keys=>this.httpClient.get<RefineResponse>(refineServiceDef.url, 
+      mergeMap(keys=>this.http.get<RefineResponse>(refineServiceDef.url, 
         { params: new HttpParams().set('queries', JSON.stringify(Utils.pick(keys)(queries)))}
       ), MAX_CONCURRENCY),
       toArray(),

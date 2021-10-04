@@ -2,31 +2,29 @@ div.title {
   display: flex;
   margin-top: 10px;
 }
-
 div.title a {
   margin-left: auto;
 }
-
 .settings-section {
   display: flex;
   align-content: center;
   align-items: center;
   margin: 10px 0;
 }
-
 .settings-control {
   margin: 0 10px;
 }
-
 .commands-container {
   margin-top: 20px;
   width: fit-content;
 }
-
 .spinner {
   float: right;
 }
-
 .commands-container button {
   margin-right: 10px;
+}
+.mat-accordion {
+  margin-bottom: 12px;
+  display: block;
 }

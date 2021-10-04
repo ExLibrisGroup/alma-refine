@@ -5,7 +5,7 @@ import { BibsService } from '../services/bibs.service';
 import { mergeMap, map, tap } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { RefineService } from '../services/refine.service';
-import { Utils } from '../utilities';
+import { Utils } from '../utilities/utilities';
 import { RefineServiceField } from '../models/refine-service';
 
 const MAX_PARALLEL_CALLS = 5;

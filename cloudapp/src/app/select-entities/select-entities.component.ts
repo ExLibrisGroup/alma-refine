@@ -11,7 +11,7 @@ export class SelectEntitiesComponent implements OnInit {
   masterChecked: boolean;
   masterIndeterminate: boolean;
   entities: SelectItem[];
-  @Input() selectedEntities: Set<string>;
+  @Input() selectedEntities = new Set<string>();
   @Output() entitySelected = new EventEmitter();
 
   constructor() { }

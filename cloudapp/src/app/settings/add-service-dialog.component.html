@@ -1,0 +1,16 @@
+<h2 mat-dialog-title translate>{{data.title}}</h2>
+<mat-dialog-content>
+  <p *ngIf="text">{{text}}</p>
+  <mat-form-field>
+    <mat-label>{{'Settings.ServiceDef.Name' | translate }}</mat-label>
+    <input matInput #input [(ngModel)]="result.name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{'Settings.ServiceDef.ServiceURL' | translate}}</mat-label>
+    <input matInput [(ngModel)]="result.url" (keyup.enter)="dialogRef.close(result)">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="secondary" mat-dialog-close>{{data.cancel || 'Cancel' | translate}}</button>
+  <button mat-flat-button color="secondary" [mat-dialog-close]="result" cdkFocusInitial>{{data.ok || 'OK' | translate}}</button>
+</mat-dialog-actions>

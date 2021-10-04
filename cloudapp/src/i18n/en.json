@@ -1,7 +1,9 @@
 {
+	"OK": "OK",
+  "Cancel": "Cancel",
 	"Main": {
 		"BeginRefining": "Begin Refining",
-		"DisplayedIds": "Refine the {{length}} records on this page",
+		"DisplayedIds": "Refine the {length} records on this page",
 		"DisplayedRecords": "Displayed Records",
 		"SelectRecords": "Select Records",
 		"Intro": "To begin refining records, navigate to a list of Bibliographic records or select a set.",
@@ -36,6 +38,13 @@
 		"Saved": "Settings successfully saved",
 		"RestoreDefault": "Restore default",
 		"RestoreConfirm": "Restore default settings and lose all local configuration?",
+		"Add": "Add",
+    "Rename": "Rename",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Name": "Name",
+    "Exists": "\"{name}\" already exists.",
+		"ConfirmDelete": "Are you sure you want to delete \"{name}\"",
 		"ServiceDef": {
 			"Name": "Name",
 			"UriField": "URI Subfield",
@@ -44,7 +53,7 @@
 			"Prefix": "Prefix",
 			"PrefixHint": "Optional URI prefix for $0",
 			"Fields": "Fields",
-			"FieldHeader": "Field #{{index}}",
+			"FieldHeader": "Field #{index}",
 			"Tag": "Tag",
 			"Subfield": "Subfield",
 			"Indexes": "Indexes",
