@@ -118,15 +118,5 @@ export const defaultRefineServices: RefineServices = {
     ],
     "uriSubfield": "1",
     "correctTerm": false,
-  },
-  "orcid": {
-    "name": "ORCID",
-    "url": "https://refine.codefork.com/reconcile/orcid",
-    "prefix": "https://orcid.org/",
-    "fields": [
-      { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] }
-    ],
-    "uriSubfield": "1",
-    "correctTerm": false,
-  },
+  }
 }
