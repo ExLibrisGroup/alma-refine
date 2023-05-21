@@ -1,3 +1,7 @@
+import { RefineService } from "../services/refine.service";
+
+export const ORCID_URL: string = "view/orcidForAlmaRefineCloudApp";
+
 export interface RefineServiceDef {
   name: string,
   url: string,
@@ -118,5 +122,25 @@ export const defaultRefineServices: RefineServices = {
     ],
     "uriSubfield": "1",
     "correctTerm": false,
-  }
+  },
+  "orcid": {
+    "name": "ORCID",
+    "url": ORCID_URL,//ORCID hostname is added as a prefix, while using this value.
+    "prefix": "https://orcid.org/",
+    "fields": [
+      { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] }
+    ],
+    "uriSubfield": "1",
+    "correctTerm": false,
+  },
+//   "homosaurus": {
+//     "name": "HOMOSAURUS",
+//     "url": "https://homosaurus-reconcile-csv.glitch.me/reconcile",
+//     "prefix": "https://homosaurus.org/v3/",
+//     "fields": [
+//       { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] }
+//     ],
+//     "uriSubfield": "1",
+//     "correctTerm": false,
+//   }
 }

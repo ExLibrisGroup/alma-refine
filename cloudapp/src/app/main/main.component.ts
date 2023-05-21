@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CloudAppEventsService, Entity, PageInfo, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { RefineServiceDef } from '../models/refine-service';
@@ -9,6 +9,9 @@ import { SelectSetComponent } from '../select-set/select-set.component';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { SelectEntitiesComponent } from '../select-entities/select-entities.component';
+import { RefineService } from '../services/refine.service';
+import { HttpProxyService } from '../services/http.service';
+import { mergeMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main',
@@ -29,13 +32,25 @@ export class MainComponent implements OnInit, OnDestroy {
 
   constructor(
     private eventsService: CloudAppEventsService,
-    public configService: ConfigService,
-    private router: Router
+    public configService: ConfigService, private refineService: RefineService,
+    private httpService: HttpProxyService, private router: Router
   ) { }
 
   ngOnInit() {
     this.serviceSelect = new FormControl(this.configService.selectedRefineService);
-    this.configService.getSettings().subscribe(settings=>this.refineServices=Object.values(settings.refineServices));
+    this.eventsService.getInitData().pipe(
+        tap(res => this.httpService.setAlmaHostName(res.urls.alma) ), 
+        mergeMap(_ =>  forkJoin([this.refineService.checkOrcidPermissions(), this.configService.getSettings()])))
+    .subscribe(res=> {
+      const hasOrcidPermission = res[0];
+      const settings = res[1];
+      this.refineServices=Object.entries(settings.refineServices).filter(([key, value]) => {
+        // check permissions
+        if (key === `orcid`) {
+          return hasOrcidPermission
+        }
+        return true;
+    }).map(([key, value]) => value)});
     this.pageLoad$ = this.eventsService.onPageLoad(this.onPageLoad);
   }
 

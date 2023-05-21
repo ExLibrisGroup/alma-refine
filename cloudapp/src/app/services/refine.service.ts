@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { HttpProxyService } from './http.service';
-import { RefineServiceDef, RefineQueries, RefineResponse } from '../models/refine-service';
+import { RefineServiceDef, RefineQueries, RefineResponse, ORCID_URL} from '../models/refine-service';
 import { Refinements } from '../models/bib';
 import { Utils } from '../utilities/utilities';
 import * as crc from 'js-crc';
-import { from } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { mergeMap, toArray, map } from 'rxjs/operators';
 
 const BATCH_SIZE = 10;
@@ -59,4 +59,8 @@ export class RefineService {
     return {uri: uri, previewUrl: previewUrl};
   }
 
+  checkOrcidPermissions() : Observable<boolean>{
+    return this.http.get<object>(ORCID_URL, { params: new HttpParams().set('query', 'hasOrcidCredentials') })
+      .pipe(map(res => res['hasOrcidCredentials']))
+  }
 }
