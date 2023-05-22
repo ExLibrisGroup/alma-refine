@@ -23,8 +23,9 @@
    ],
    "contentSecurity": {
       "connectSrc": [
-         "self",
-         "localhost/",
+         "http://localhost:1801",
+         "http://*.corp.exlibrisgroup.com:1801",
+         "https://*.alma.exlibrisgroup.com",
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
          "https://api.exldevnetwork.net",
