@@ -32,6 +32,9 @@ export class HttpProxyService {
     const url = new URL(uri);
     if (isOrcid) {
       host = this.almaHostName;
+      if (host.length > 0 && host.charAt(host.length - 1) === "/"){
+        host = host.slice(0, host.length - 1);
+      }
     }
     return this.getToken().pipe(
       tap(token => {

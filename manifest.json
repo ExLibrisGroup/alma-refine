@@ -23,6 +23,8 @@
    ],
    "contentSecurity": {
       "connectSrc": [
+         "self",
+         "localhost/",
          "https://services.getty.edu",
          "https://wdreconcile.toolforge.org",
          "https://api.exldevnetwork.net",
