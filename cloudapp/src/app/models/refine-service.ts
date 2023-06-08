@@ -128,7 +128,9 @@ export const defaultRefineServices: RefineServices = {
     "url": ORCID_URL,//ORCID hostname is added as a prefix, while using this value.
     "prefix": "https://orcid.org/",
     "fields": [
-      { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] }
+      { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] },
+      { "tag": "700", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": ["b", "c", "d"] }
+      
     ],
     "uriSubfield": "1",
     "correctTerm": false,
