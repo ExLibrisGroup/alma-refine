@@ -61,7 +61,7 @@ export const defaultRefineServices: RefineServices = {
   },
   "wikidata": {
     "name": "Wikidata",
-    "url": "https://wdreconcile.toolforge.org/en/api",
+    "url": "https://wikidata.reconci.link/en/api",
     "prefix": "http://www.wikidata.org/entity/",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] }
@@ -135,14 +135,16 @@ export const defaultRefineServices: RefineServices = {
     "uriSubfield": "1",
     "correctTerm": false,
   },
-//   "homosaurus": {
-//     "name": "HOMOSAURUS",
-//     "url": "https://homosaurus-reconcile-csv.glitch.me/reconcile",
-//     "prefix": "https://homosaurus.org/v3/",
-//     "fields": [
-//       { "tag": "100", "subfield": "a", "indexes": ["/people/person"], "subfield2": [], "hints": [] }
-//     ],
-//     "uriSubfield": "1",
-//     "correctTerm": false,
-//   }
+  // "homosaurus": {
+  //   "name": "HOMOSAURUS",
+  //   "url": "https://homosaurus-reconcile-csv.glitch.me/reconcile",
+  //   "prefix": "https://homosaurus.org/v3/",
+  //   "fields": [
+  //     { "tag": "650", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] },
+  //     { "tag": "655", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] },
+  //     { "tag": "670", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] }
+  //   ],
+  //   "uriSubfield": "1",
+  //   "correctTerm": false,
+  // }
 }
