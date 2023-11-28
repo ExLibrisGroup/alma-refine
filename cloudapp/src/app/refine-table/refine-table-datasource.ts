@@ -119,7 +119,10 @@ export class RefineTableDataSource implements DataSource<Bib> {
     return this.bibsService.getBib(mmsId).pipe( map( bib => {
       const doc = new DOMParser().parseFromString(bib.anies, "application/xml");
       refinements.forEach(field=>{
-        let datafield = Utils.select(doc, `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()='${field.value}']`, { single: true }).singleNodeValue;
+        /* Choosing the type of quote based on the content inside text() */
+        const quoteType = field.value.includes("'") ? '"' : "'";
+        let expression = `/record/datafield[@tag='${field.tag}']/subfield[@code='${field.subfield}' and text()=${quoteType}${field.value}${quoteType}]`;
+        let datafield = Utils.select(doc, expression, { single: true }).singleNodeValue;        
         if (datafield) {
           if (field.selectedRefineOption) {
             /* Correct term */
