@@ -137,7 +137,7 @@ export const defaultRefineServices: RefineServices = {
   },
   "homosaurus": {
     "name": "HOMOSAURUS",
-    "url": "https://homosaurus.org/reconcile",
+    "url": "https://api.homosaurus.org/reconcile",
     "prefix": "https://homosaurus.org/v3/",
     "fields": [
       { "tag": "650", "subfield": "a", "indexes": [''], "subfield2": ["homoit"], "hints": [] },
