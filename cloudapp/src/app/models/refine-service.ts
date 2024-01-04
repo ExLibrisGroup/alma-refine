@@ -135,16 +135,16 @@ export const defaultRefineServices: RefineServices = {
     "uriSubfield": "1",
     "correctTerm": false,
   },
-  // "homosaurus": {
-  //   "name": "HOMOSAURUS",
-  //   "url": "https://homosaurus-reconcile-csv.glitch.me/reconcile",
-  //   "prefix": "https://homosaurus.org/v3/",
-  //   "fields": [
-  //     { "tag": "650", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] },
-  //     { "tag": "655", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] },
-  //     { "tag": "670", "subfield": "a", "indexes": [''], "subfield2": [], "hints": [] }
-  //   ],
-  //   "uriSubfield": "1",
-  //   "correctTerm": false,
-  // }
+  "homosaurus": {
+    "name": "HOMOSAURUS",
+    "url": "https://homosaurus.org/reconcile",
+    "prefix": "https://homosaurus.org/v3/",
+    "fields": [
+      { "tag": "650", "subfield": "a", "indexes": [''], "subfield2": ["homoit"], "hints": [] },
+      { "tag": "655", "subfield": "a", "indexes": [''], "subfield2": ["homoit"], "hints": [] },
+      { "tag": "670", "subfield": "a", "indexes": [''], "subfield2": ["homoit"], "hints": [] }
+    ],
+    "uriSubfield": "1",
+    "correctTerm": false,
+  }
 }
