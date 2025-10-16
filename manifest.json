@@ -37,7 +37,8 @@
          "https://wdreconcile.toolforge.org",
          "https://api.exldevnetwork.net",
          "https://lobid.org",
-         "https://conciliator.herokuapp.com"
+         "https://conciliator.herokuapp.com",
+         "https://reconcile.gnd.network"
       ],
       "sandbox": {
          "modals": true
