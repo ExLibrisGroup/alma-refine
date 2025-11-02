@@ -38,6 +38,7 @@
          "https://api.exldevnetwork.net",
          "https://lobid.org",
          "https://conciliator.herokuapp.com",
+         "wikidata.reconci.link",
          "https://reconcile.gnd.network"
       ],
       "sandbox": {
