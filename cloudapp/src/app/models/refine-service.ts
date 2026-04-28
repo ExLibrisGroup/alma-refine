@@ -61,7 +61,7 @@ export const defaultRefineServices: RefineServices = {
   },
   "wikidata": {
     "name": "Wikidata",
-    "url": "https://wikidata.reconci.link/en/api",
+    "url": "https://wikidata-reconciliation.wmcloud.org/en/api",
     "prefix": "http://www.wikidata.org/entity/",
     "fields": [
       { "tag": "100", "subfield": "a", "indexes": [], "subfield2": [], "hints": [] }
